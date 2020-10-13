@@ -28,7 +28,7 @@ struct VERTEX
 class GraphicsEngine
 {
 public:
-  GraphicsEngine(HWND hWnd);
+  GraphicsEngine(HWND hWnd, int width, int height);
   ~GraphicsEngine();
 
   void RenderFrame();
@@ -40,17 +40,19 @@ private:
 
   std::vector<VERTEX> m_vertices =
   {
-      {-0.3f,  -0.2f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.25f,  0.0f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.15f,  0.0f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.1f,  -0.2f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.05f,  0.8f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      { 0.1f,  -0.2f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      { 0.15f,  0.0f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      { 0.25f,  0.0f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      { 0.3f,  -0.2f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      { 0.05f,  0.8f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)}
+      {-0.3f,  -0.2f, 0.4f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
+      {-0.25f,  0.0f, 0.4f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
+      {-0.15f,  0.0f, 0.4f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)}
   };
+  std::vector<VERTEX> m_vertices2 =
+  {
+      {-0.4f,  -0.2f, 0.5f, D3DXCOLOR(0.0f, 0.5f, 0.5f, 1.0f)},
+      {-0.20f,  0.0f, 0.5f, D3DXCOLOR(0.0f, 0.5f, 0.5f, 1.0f)},
+      {-0.10f,  0.0f, 0.5f, D3DXCOLOR(0.0f, 0.5f, 0.5f, 1.0f)}
+  };
+
+  int m_width;
+  int m_height;
 
   IDXGISwapChain *m_swapchain;
   ID3D11Device *m_device;
@@ -60,9 +62,11 @@ private:
   ID3D11VertexShader *m_vertexShader;   
   ID3D11PixelShader *m_pixelShader;    
   ID3D11Buffer *m_vertexBuffer;    
+  ID3D11Buffer *m_vertexBuffer2;    
   ID3D11Buffer *m_indexBuffer;
   ID3D11DepthStencilView* m_depthStencilView;
   ID3D11Texture2D* m_depthStencilBuffer;
-
+  ID3D11DepthStencilState* m_depthStencilState;
+  ID3D11RasterizerState *m_rasterizerState;
 };
 

@@ -4,6 +4,9 @@
 
 #include "GraphicsEngine.h"
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 static std::shared_ptr<GraphicsEngine> GE;
@@ -32,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   ShowWindow(hWnd, nCmdShow);
 
-  GE = std::make_shared<GraphicsEngine>(hWnd);
+  GE = std::make_shared<GraphicsEngine>(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT);
 
   MSG msg;
   while (true)
