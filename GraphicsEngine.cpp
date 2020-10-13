@@ -93,6 +93,29 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
   rasterizerDesc.CullMode = D3D11_CULL_BACK;
   m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
 
+  // CAMERA STUFF
+  D3D11_BUFFER_DESC cbbd;
+  ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+
+  cbbd.Usage = D3D11_USAGE_DEFAULT;
+  cbbd.ByteWidth = sizeof(cbPerObject);
+  cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+  cbbd.CPUAccessFlags = 0;
+  cbbd.MiscFlags = 0;
+
+  m_device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
+
+  //Camera information
+  m_camPosition = XMVectorSet(0.5f, 0.0f, -0.5f, 0.0f);
+  m_camTarget = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+  m_camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+  //Set the View matrix
+  m_camView = XMMatrixLookAtLH(m_camPosition, m_camTarget, m_camUp);
+
+  //Set the Projection matrix
+  m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 1.0f, 1000.0f);
+
   InitPipeline();
   InitGraphics();
 
@@ -114,6 +137,7 @@ GraphicsEngine::~GraphicsEngine()
   m_depthStencilBuffer->Release();
   m_depthStencilState->Release();
   m_rasterizerState->Release();
+  m_cbPerObjectBuffer->Release();
 }
 
 
@@ -123,6 +147,18 @@ void GraphicsEngine::RenderFrame(void)
 
   //Refresh the Depth/Stencil view
   m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+  //Set the World/View/Projection matrix, then send it to constant buffer in effect file
+  m_World = XMMatrixIdentity();
+
+  m_WVP = m_World * m_camView * m_camProjection;
+
+  m_cbPerObj.WVP = XMMatrixTranspose(m_WVP);
+
+  m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer, 0, NULL, &m_cbPerObj, 0, 0);
+
+  m_deviceContext->VSSetConstantBuffers(0, 1, &m_cbPerObjectBuffer);
+  // -------
 
   m_deviceContext->IASetInputLayout(m_inputLayout);
   m_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -147,13 +183,19 @@ void GraphicsEngine::RenderFrame(void)
   m_swapchain->Present(0, 0);
 }
 
-void GraphicsEngine::UpdateVertexBuffer()
+void GraphicsEngine::UpdateVertexBuffer(bool left)
 {
   D3D11_MAPPED_SUBRESOURCE vertexBufferData;
   
   m_deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexBufferData);
   memcpy(vertexBufferData.pData, m_vertices.data(), m_vertices.size() * sizeof(VERTEX));
   m_deviceContext->Unmap(m_vertexBuffer, 0);
+
+  if (left)
+    m_camView = m_camView * XMMatrixTranslation(-0.01f, 0.0f, 0.0f);
+  else
+    m_camView = m_camView * XMMatrixTranslation(0.01f, 0.0f, 0.0f);
+
 }
 
 // -------------------------

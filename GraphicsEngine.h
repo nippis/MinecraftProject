@@ -7,6 +7,7 @@
 #include <d3dx10.h>
 #include <vector>
 #include <ctime>
+#include <xnamath.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -25,6 +26,11 @@ struct VERTEX
   D3DXCOLOR Color;
 };
 
+struct cbPerObject
+{
+  XMMATRIX  WVP;
+};
+
 class GraphicsEngine
 {
 public:
@@ -32,12 +38,12 @@ public:
   ~GraphicsEngine();
 
   void RenderFrame();
-  void UpdateVertexBuffer();
+  void UpdateVertexBuffer(bool left);
 
 private:
   void InitGraphics();
   void InitPipeline();
-
+  
   std::vector<VERTEX> m_vertices =
   {
       {-0.3f,  -0.2f, 0.4f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
@@ -54,6 +60,22 @@ private:
   int m_width;
   int m_height;
 
+  XMMATRIX m_WVP;
+  XMMATRIX m_World;
+  XMMATRIX m_camView;
+  XMMATRIX m_camProjection;
+  XMVECTOR m_camPosition;
+  XMVECTOR m_camTarget;
+  XMVECTOR m_camUp;
+
+  XMMATRIX Rotation;
+  XMMATRIX Scale;
+  XMMATRIX Translation;
+
+  float trans = 0.00f;
+
+  cbPerObject m_cbPerObj;
+
   IDXGISwapChain *m_swapchain;
   ID3D11Device *m_device;
   ID3D11DeviceContext *m_deviceContext;
@@ -68,5 +90,6 @@ private:
   ID3D11Texture2D* m_depthStencilBuffer;
   ID3D11DepthStencilState* m_depthStencilState;
   ID3D11RasterizerState *m_rasterizerState;
+  ID3D11Buffer* m_cbPerObjectBuffer;
 };
 

@@ -68,7 +68,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     } break;
     case WM_KEYDOWN:
     {
-
+      if (wParam == VK_LEFT)
+        GE->UpdateVertexBuffer(true);
+      else if (wParam == VK_RIGHT)
+        GE->UpdateVertexBuffer(false);
     } break;
   }
 
