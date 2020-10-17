@@ -161,7 +161,7 @@ void GraphicsEngine::RenderFrame(void)
   UINT stride = sizeof(VERTEX);
   UINT offset = 0;
 
-  m_deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
+  m_deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer->GetBuffer().GetAddressOf(), &stride, &offset);
   m_deviceContext->DrawIndexed(30, 0, 0);
 
 
@@ -208,19 +208,8 @@ void GraphicsEngine::InitGraphics()
   m_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
   // TRIANGLE 1
-  D3D11_BUFFER_DESC bd;
-  ZeroMemory(&bd, sizeof(bd));
-
-  bd.Usage = D3D11_USAGE_DYNAMIC;
-  bd.ByteWidth = sizeof(VERTEX) * m_vertices.size();
-  bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-  bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-  D3D11_SUBRESOURCE_DATA vinitData;
-  vinitData.pSysMem = m_vertices.data();
-
-  m_device->CreateBuffer(&bd, &vinitData, &m_vertexBuffer);
-
+  
+  m_vertexBuffer = std::make_shared<VertexBuffer>(m_device, m_vertices);
 }
 
 
