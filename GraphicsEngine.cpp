@@ -64,7 +64,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
   m_device->CreateDepthStencilView(m_depthStencilBuffer.Get(), NULL, &m_depthStencilView);
 
   //Set our Render Target
-  m_deviceContext->OMSetRenderTargets(1, &m_backbuffer, m_depthStencilView.Get());
+  m_deviceContext->OMSetRenderTargets(1, m_backbuffer.GetAddressOf(), m_depthStencilView.Get());
 
   D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
   ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
@@ -161,7 +161,7 @@ void GraphicsEngine::RenderFrame(void)
   UINT stride = sizeof(VERTEX);
   UINT offset = 0;
 
-  m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+  m_deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
   m_deviceContext->DrawIndexed(30, 0, 0);
 
 
@@ -170,37 +170,6 @@ void GraphicsEngine::RenderFrame(void)
 
 void GraphicsEngine::UpdateVertexBuffer(bool left)
 {
-  //D3D11_MAPPED_SUBRESOURCE vertexBufferData;
-  //
-  //m_deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexBufferData);
-  //memcpy(vertexBufferData.pData, m_vertices.data(), m_vertices.size() * sizeof(VERTEX));
-  //m_deviceContext->Unmap(m_vertexBuffer, 0);
-
-  //Reset cube1World
-  //m_cube1World = XMMatrixIdentity();
-
-  //if (left)
-  //{
-  //  m_rot += .0005f;
-  //  if (m_rot > 6.26f)
-  //    m_rot = 0.0f;
-  //}
-  //else
-  //{
-  //  m_rot -= .0005f;
-  //  if (m_rot < 6.26f)
-  //    m_rot = 0.0f;
-  //}
-  //
-  ////Define cube1's world space matrix
-  //XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-  //Rotation = XMMatrixRotationAxis(rotaxis, m_rot);
-  //Translation = XMMatrixTranslation(0.0f, 0.0f, 4.0f);
-
-  //Set cube1's world space using the transformations
-  //m_cube1World = Translation * Rotation;
-
-
 
 }
 
@@ -266,8 +235,8 @@ void GraphicsEngine::InitPipeline()
   D3DX11CompileFromFile(L"PixelShader.hlsl", 0, 0, "main", "ps_4_0", 0, 0, 0, &PS, 0, 0);
 
   // encapsulate both shaders into shader objects
-  m_device->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &m_vertexShader);
-  m_device->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &m_pixelShader);
+  m_device->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, m_vertexShader.GetAddressOf());
+  m_device->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, m_pixelShader.GetAddressOf());
 
   // create the input layout object
   D3D11_INPUT_ELEMENT_DESC ied[] =
