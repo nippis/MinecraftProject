@@ -1,5 +1,3 @@
-#include <windows.h>
-#include <windowsx.h>
 #include <memory>
 
 #include "GraphicsEngine.h"

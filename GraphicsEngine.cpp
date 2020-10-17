@@ -1,4 +1,5 @@
 #include "GraphicsEngine.h"
+#include "ErrorLogger.h"
 
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dx11.lib")
@@ -7,6 +8,8 @@
 GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
   m_width(width), m_height(height)
 {
+
+  HRESULT hr;
   //Describe our SwapChain Buffer
   DXGI_MODE_DESC bufferDesc;
 
@@ -36,11 +39,10 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
   D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, NULL, NULL, NULL, D3D11_SDK_VERSION, &scd, &m_swapchain, &m_device, NULL, &m_deviceContext);
 
   // Set the render target
-  ID3D11Texture2D *pBackBuffer;
+  Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer;
   m_swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
-  m_device->CreateRenderTargetView(pBackBuffer, NULL, &m_backbuffer);
-  pBackBuffer->Release();
+  m_device->CreateRenderTargetView(pBackBuffer.Get(), NULL, &m_backbuffer);
 
   //Describe our Depth/Stencil Buffer
   D3D11_TEXTURE2D_DESC depthStencilDesc;
@@ -59,10 +61,10 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
 
   //Create the Depth/Stencil View
   m_device->CreateTexture2D(&depthStencilDesc, NULL, &m_depthStencilBuffer);
-  m_device->CreateDepthStencilView(m_depthStencilBuffer, NULL, &m_depthStencilView);
+  m_device->CreateDepthStencilView(m_depthStencilBuffer.Get(), NULL, &m_depthStencilView);
 
   //Set our Render Target
-  m_deviceContext->OMSetRenderTargets(1, &m_backbuffer, m_depthStencilView);
+  m_deviceContext->OMSetRenderTargets(1, &m_backbuffer, m_depthStencilView.Get());
 
   D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
   ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
@@ -103,10 +105,14 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
   cbbd.CPUAccessFlags = 0;
   cbbd.MiscFlags = 0;
 
-  m_device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
+  hr = m_device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
+  if (FAILED(hr))
+  {
+    ErrorLogger::Log(hr, "Ei nyt toiminu tää kamerabufferin teko");
+  }
 
   //Camera information
-  m_camPosition = XMVectorSet(0.5f, 0.0f, -0.5f, 0.0f);
+  m_camPosition = XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f);
   m_camTarget = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
   m_camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -122,62 +128,41 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
 
 }
 
-GraphicsEngine::~GraphicsEngine()
-{
-  m_inputLayout->Release();
-  m_vertexShader->Release();
-  m_pixelShader->Release();
-  m_vertexBuffer->Release();
-  m_vertexBuffer2->Release();
-  m_swapchain->Release();
-  m_backbuffer->Release();
-  m_device->Release();
-  m_deviceContext->Release();
-  m_depthStencilView->Release();
-  m_depthStencilBuffer->Release();
-  m_depthStencilState->Release();
-  m_rasterizerState->Release();
-  m_cbPerObjectBuffer->Release();
-}
-
 
 void GraphicsEngine::RenderFrame(void)
 {
-  m_deviceContext->ClearRenderTargetView(m_backbuffer, D3DXCOLOR(0.0f, 0.2f, 0.4f, 0.0f));
+  m_deviceContext->ClearRenderTargetView(m_backbuffer.Get(), D3DXCOLOR(0.0f, 0.2f, 0.4f, 0.0f));
 
   //Refresh the Depth/Stencil view
-  m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+  m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
   m_World = XMMatrixIdentity();
 
   m_WVP = m_World * m_camView * m_camProjection;
 
-  m_cbPerObj.WVP = XMMatrixTranspose(m_WVP);
+  cbPerObj.WVP = XMMatrixTranspose(m_WVP);
 
-  m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer, 0, NULL, &m_cbPerObj, 0, 0);
+  m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer.Get(), 0, NULL, &cbPerObj, 0, 0);
 
-  m_deviceContext->VSSetConstantBuffers(0, 1, &m_cbPerObjectBuffer);
+  m_deviceContext->VSSetConstantBuffers(0, 1, m_cbPerObjectBuffer.GetAddressOf());
   // -------
 
-  m_deviceContext->IASetInputLayout(m_inputLayout);
+  m_deviceContext->IASetInputLayout(m_inputLayout.Get());
   m_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-  m_deviceContext->RSSetState(m_rasterizerState);
-  m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 0);
+  m_deviceContext->RSSetState(m_rasterizerState.Get());
+  m_deviceContext->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
 
   // set the shader objects
-  m_deviceContext->VSSetShader(m_vertexShader, 0, 0);
-  m_deviceContext->PSSetShader(m_pixelShader, 0, 0);
+  m_deviceContext->VSSetShader(m_vertexShader.Get(), 0, 0);
+  m_deviceContext->PSSetShader(m_pixelShader.Get(), 0, 0);
 
   // select which vertex buffer to display
   UINT stride = sizeof(VERTEX);
   UINT offset = 0;
 
-  
-  m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer2, &stride, &offset);
-  m_deviceContext->Draw(3, 0);
   m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
-  m_deviceContext->Draw(3, 0);
+  m_deviceContext->DrawIndexed(30, 0, 0);
 
 
   m_swapchain->Present(0, 0);
@@ -185,16 +170,37 @@ void GraphicsEngine::RenderFrame(void)
 
 void GraphicsEngine::UpdateVertexBuffer(bool left)
 {
-  D3D11_MAPPED_SUBRESOURCE vertexBufferData;
-  
-  m_deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexBufferData);
-  memcpy(vertexBufferData.pData, m_vertices.data(), m_vertices.size() * sizeof(VERTEX));
-  m_deviceContext->Unmap(m_vertexBuffer, 0);
+  //D3D11_MAPPED_SUBRESOURCE vertexBufferData;
+  //
+  //m_deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexBufferData);
+  //memcpy(vertexBufferData.pData, m_vertices.data(), m_vertices.size() * sizeof(VERTEX));
+  //m_deviceContext->Unmap(m_vertexBuffer, 0);
 
-  if (left)
-    m_camView = m_camView * XMMatrixTranslation(-0.01f, 0.0f, 0.0f);
-  else
-    m_camView = m_camView * XMMatrixTranslation(0.01f, 0.0f, 0.0f);
+  //Reset cube1World
+  //m_cube1World = XMMatrixIdentity();
+
+  //if (left)
+  //{
+  //  m_rot += .0005f;
+  //  if (m_rot > 6.26f)
+  //    m_rot = 0.0f;
+  //}
+  //else
+  //{
+  //  m_rot -= .0005f;
+  //  if (m_rot < 6.26f)
+  //    m_rot = 0.0f;
+  //}
+  //
+  ////Define cube1's world space matrix
+  //XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+  //Rotation = XMMatrixRotationAxis(rotaxis, m_rot);
+  //Translation = XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+
+  //Set cube1's world space using the transformations
+  //m_cube1World = Translation * Rotation;
+
+
 
 }
 
@@ -205,7 +211,16 @@ void GraphicsEngine::InitGraphics()
 {
 
   std::vector<DWORD> indices = {
-        0, 1, 2
+        0, 1, 2,
+        0, 2, 3,
+        3, 2, 6,
+        3, 6, 7,
+        1, 5, 2,
+        2, 5, 6,
+        0, 4, 5,
+        5, 1, 0,
+        0, 3, 4,
+        3, 7, 4
   };
 
   D3D11_BUFFER_DESC indexBufferDesc;
@@ -221,7 +236,7 @@ void GraphicsEngine::InitGraphics()
   iinitData.pSysMem = indices.data();
   m_device->CreateBuffer(&indexBufferDesc, &iinitData, &m_indexBuffer);
 
-  m_deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+  m_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
   // TRIANGLE 1
   D3D11_BUFFER_DESC bd;
@@ -236,20 +251,6 @@ void GraphicsEngine::InitGraphics()
   vinitData.pSysMem = m_vertices.data();
 
   m_device->CreateBuffer(&bd, &vinitData, &m_vertexBuffer);
-
-  // TRIANGLE 2
-  ZeroMemory(&bd, sizeof(bd));
-
-  bd.Usage = D3D11_USAGE_DYNAMIC;
-  bd.ByteWidth = sizeof(VERTEX) * m_vertices2.size();
-  bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-  bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-  ZeroMemory(&vinitData, sizeof(D3D11_SUBRESOURCE_DATA));
-  vinitData.pSysMem = m_vertices2.data();
-
-  m_device->CreateBuffer(&bd, &vinitData, &m_vertexBuffer2);
-
 
 }
 

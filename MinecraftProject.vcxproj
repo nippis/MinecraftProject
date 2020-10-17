@@ -153,8 +153,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ErrorLogger.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="StringConverter.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -174,7 +177,10 @@
     <None Include="Header.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ErrorLogger.h" />
     <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="StringConverter.h" />
+    <ClInclude Include="VertexBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

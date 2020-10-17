@@ -8,6 +8,7 @@
 #include <vector>
 #include <ctime>
 #include <xnamath.h>
+#include <wrl.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -35,7 +36,7 @@ class GraphicsEngine
 {
 public:
   GraphicsEngine(HWND hWnd, int width, int height);
-  ~GraphicsEngine();
+  ~GraphicsEngine() = default;
 
   void RenderFrame();
   void UpdateVertexBuffer(bool left);
@@ -46,19 +47,20 @@ private:
   
   std::vector<VERTEX> m_vertices =
   {
-      {-0.3f,  -0.2f, 0.4f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.25f,  0.0f, 0.4f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.15f,  0.0f, 0.4f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)}
-  };
-  std::vector<VERTEX> m_vertices2 =
-  {
-      {-0.4f,  -0.2f, 0.5f, D3DXCOLOR(0.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.20f,  0.0f, 0.5f, D3DXCOLOR(0.0f, 0.5f, 0.5f, 1.0f)},
-      {-0.10f,  0.0f, 0.5f, D3DXCOLOR(0.0f, 0.5f, 0.5f, 1.0f)}
+      {-0.2f, -0.2f, 0.5f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
+      {-0.2f,  0.2f, 0.5f, D3DXCOLOR(0.5f, 1.0f, 0.5f, 1.0f)},
+      { 0.2f,  0.2f, 0.5f, D3DXCOLOR(0.5f, 0.5f, 1.0f, 1.0f)},
+      { 0.2f, -0.2f, 0.5f, D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f)},
+      {-0.2f, -0.2f, 0.9f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
+      {-0.2f,  0.2f, 0.9f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
+      { 0.2f,  0.2f, 0.9f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)},
+      { 0.2f, -0.2f, 0.9f, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f)}
   };
 
   int m_width;
   int m_height;
+
+  XMMATRIX m_cube1World;
 
   XMMATRIX m_WVP;
   XMMATRIX m_World;
@@ -72,24 +74,23 @@ private:
   XMMATRIX Scale;
   XMMATRIX Translation;
 
-  float trans = 0.00f;
+  float m_rot = 0.00f;
 
-  cbPerObject m_cbPerObj;
+  Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapchain;
+  Microsoft::WRL::ComPtr<ID3D11Device> m_device;
+  Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;
+  Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_backbuffer;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+  Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;   
+  Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;    
+  Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;    
+  Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBuffer;
+  Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
+  Microsoft::WRL::ComPtr<ID3D11Texture2D> m_depthStencilBuffer;
+  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
+  Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerState;
+  Microsoft::WRL::ComPtr<ID3D11Buffer> m_cbPerObjectBuffer;
 
-  IDXGISwapChain *m_swapchain;
-  ID3D11Device *m_device;
-  ID3D11DeviceContext *m_deviceContext;
-  ID3D11RenderTargetView *m_backbuffer;
-  ID3D11InputLayout *m_inputLayout;
-  ID3D11VertexShader *m_vertexShader;   
-  ID3D11PixelShader *m_pixelShader;    
-  ID3D11Buffer *m_vertexBuffer;    
-  ID3D11Buffer *m_vertexBuffer2;    
-  ID3D11Buffer *m_indexBuffer;
-  ID3D11DepthStencilView* m_depthStencilView;
-  ID3D11Texture2D* m_depthStencilBuffer;
-  ID3D11DepthStencilState* m_depthStencilState;
-  ID3D11RasterizerState *m_rasterizerState;
-  ID3D11Buffer* m_cbPerObjectBuffer;
+  cbPerObject cbPerObj;
 };
 
