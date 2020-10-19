@@ -1,27 +1,22 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include "Game/Entity.h"
 
-struct BlockCoord
-{
-  int x, y, z;
-};
-
-class Block
+class Block :
+  public Entity
 {
 protected:
-  Block(BlockCoord location, DirectX::XMFLOAT4 color);
+  Block(DirectX::XMVECTOR location, DirectX::XMFLOAT4 color);
 
 public:
   virtual ~Block();
 
   virtual bool Break();
 
-  BlockCoord GetLocation();
   DirectX::XMFLOAT4 GetColor();
 
 private:
-  BlockCoord m_location;
   DirectX::XMFLOAT4 m_color;
 };
 

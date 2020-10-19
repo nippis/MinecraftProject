@@ -19,7 +19,7 @@ int World::CreateTerrain()
     {
       int z = 0;
 
-      BlockCoord newCoords = { x, y, z };
+      DirectX::XMVECTOR newCoords = { x, y, z, 0.0};
       std::shared_ptr<Block> newBlock = std::make_shared<Dirt>(newCoords);
       m_blocks->push_back(newBlock);
     }
@@ -31,7 +31,7 @@ int World::CreateTerrain()
     {
       int z = -1;
 
-      BlockCoord newCoords = { x, y, z };
+      DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };
       std::shared_ptr<Block> newBlock2 = std::make_shared<Stone>(newCoords);
       m_blocks->push_back(newBlock2);
     }

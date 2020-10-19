@@ -6,7 +6,7 @@ class Dirt:
   public Block
 {
 public:
-  Dirt(BlockCoord location);
+  Dirt(DirectX::XMVECTOR location);
   virtual ~Dirt();
 
   bool Break();

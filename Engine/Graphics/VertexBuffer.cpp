@@ -6,7 +6,7 @@
 
 using namespace DirectX;
 
-VertexBuffer::VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, DirectX::XMFLOAT4 color)
+VertexBuffer::VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Device> device, DirectX::XMVECTOR blockCoord, DirectX::XMFLOAT4 color)
 {
   Initialize(device, blockCoord, color);
 }
@@ -18,18 +18,19 @@ Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer::GetBuffer()
 }
 
 
-HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, DirectX::XMFLOAT4 color)
+HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, DirectX::XMVECTOR blockCoord, DirectX::XMFLOAT4 color)
 {
+  using namespace DirectX;
   std::vector<VERTEX> vertices =
   {
-      {-0.5f + blockCoord.x, -0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
-      {-0.5f + blockCoord.x,  0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
-      { 0.5f + blockCoord.x,  0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
-      { 0.5f + blockCoord.x, -0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
-      {-0.5f + blockCoord.x, -0.5f + blockCoord.z, 1.0f + blockCoord.y, color},
-      {-0.5f + blockCoord.x,  0.5f + blockCoord.z, 1.0f + blockCoord.y, color},
-      { 0.5f + blockCoord.x,  0.5f + blockCoord.z, 1.0f + blockCoord.y, color},
-      { 0.5f + blockCoord.x, -0.5f + blockCoord.z, 1.0f + blockCoord.y, color}
+      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
+      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
+      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color},
+      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color}
   };
 
   D3D11_BUFFER_DESC bd;

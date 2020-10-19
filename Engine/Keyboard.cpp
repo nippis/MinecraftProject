@@ -30,7 +30,7 @@ bool Keyboard::IsPressed(WPARAM keycode)
 
 bool Keyboard::JumpInQueue()
 {
-  if (m_jumpInQueue)
+  if (m_jumpInQueue || IsPressed(KEY_JUMP))
   {
     m_jumpInQueue = false;
     return true;

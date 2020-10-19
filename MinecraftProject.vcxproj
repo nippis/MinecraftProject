@@ -232,6 +232,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionDetector.cpp" />
+    <ClCompile Include="Game\Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\Blocks\Block.cpp" />
     <ClCompile Include="Game\Blocks\Dirt.cpp" />
@@ -266,6 +268,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionDetector.h" />
+    <ClInclude Include="Game\Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Blocks\Block.h" />
     <ClInclude Include="Game\Blocks\Dirt.h" />
