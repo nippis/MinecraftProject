@@ -11,8 +11,8 @@
 #include "VertexBuffer.h"
 #include "./Game/Player.h"
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 600
 
 using namespace DirectX;
 
@@ -33,6 +33,7 @@ public:
 private:
   void InitGraphics();
   void InitPipeline();
+  void InitCamera();
 
   int m_width;
   int m_height;

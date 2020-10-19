@@ -1,10 +1,10 @@
 #include "Game.h"
 
 Game::Game(HWND hWnd, std::shared_ptr<Keyboard> keyboard) :
-  m_player(std::make_shared<Player>()),
   m_timer(std::make_shared<Timer>()),
   m_keyboard(keyboard)
 {
+  m_player = std::make_shared<Player>(m_timer);
   m_graphics = std::make_shared<GraphicsEngine>(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT, m_player);
 }
 
@@ -31,8 +31,9 @@ void Game::run(MSG *msg)
     calculateFrameStatistics();
 
     MoveDir direction = MovementDirection();
+    if (m_keyboard->JumpInQueue())
+      m_player->Jump();
 
-    // acquire input
 
     // now update the game logic based on the input and the elapsed time since the last frame
     update(m_timer->getDeltaTime(), direction);

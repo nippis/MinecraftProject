@@ -94,11 +94,23 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   D3D11_RASTERIZER_DESC rasterizerDesc;
   ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-  rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+  rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
   rasterizerDesc.CullMode = D3D11_CULL_BACK;
   m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
 
-  // CAMERA STUFF
+
+  // Constant buffer to pixel shader
+
+  InitCamera();
+  InitPipeline();
+  InitGraphics();
+
+
+}
+
+void GraphicsEngine::InitCamera()
+{
+  // CAMERA STUFF ----------------
   D3D11_BUFFER_DESC cbbd;
   ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
 
@@ -108,7 +120,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   cbbd.CPUAccessFlags = 0;
   cbbd.MiscFlags = 0;
 
-  hr = m_device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
+  HRESULT hr = m_device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
   if (FAILED(hr))
   {
     ErrorLogger::Log(hr, "Ei nyt toiminu tää kamerabufferin teko");
@@ -127,10 +139,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   //Set the Projection matrix
   m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 1.0f, 1000.0f);
 
-  InitPipeline();
-  InitGraphics();
-
-
+  // -------------------------
 }
 
 
@@ -172,7 +181,7 @@ void GraphicsEngine::RenderFrame(void)
   for (auto vertexBuffer : m_vertexBuffers)
   {
     m_deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetBuffer().GetAddressOf(), &stride, &offset);
-    m_deviceContext->DrawIndexed(6, 12, 0);
+    m_deviceContext->DrawIndexed(36, 0, 0);
   }
 
 

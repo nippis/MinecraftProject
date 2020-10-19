@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Blocks/Dirt.h"
+#include "Blocks/Stone.h"
 
 const int WORLD_SIZE = 16;
 

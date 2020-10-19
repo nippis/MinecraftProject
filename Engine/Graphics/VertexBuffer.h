@@ -20,13 +20,13 @@ struct VERTEX
 class VertexBuffer
 {
 public:
-  VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, BlockColor color);
+  VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, DirectX::XMFLOAT4 color);
   virtual ~VertexBuffer() = default;
 
   Microsoft::WRL::ComPtr<ID3D11Buffer> GetBuffer();
 
 private:
-  HRESULT Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, BlockColor color);
+  HRESULT Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, DirectX::XMFLOAT4 color);
 
   UINT m_stride;
   UINT m_offset;

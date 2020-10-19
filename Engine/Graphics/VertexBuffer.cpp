@@ -6,7 +6,7 @@
 
 using namespace DirectX;
 
-VertexBuffer::VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, BlockColor color)
+VertexBuffer::VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, DirectX::XMFLOAT4 color)
 {
   Initialize(device, blockCoord, color);
 }
@@ -18,18 +18,18 @@ Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer::GetBuffer()
 }
 
 
-HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, BlockColor color)
+HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, BlockCoord blockCoord, DirectX::XMFLOAT4 color)
 {
   std::vector<VERTEX> vertices =
   {
-      {-0.5f + blockCoord.x, -0.5f + blockCoord.z, 0.0f + blockCoord.y, XMFLOAT4(0.5f, 0.3f, 0.0f, 1.0f)},
-      {-0.5f + blockCoord.x,  0.5f + blockCoord.z, 0.0f + blockCoord.y, XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f)},
-      { 0.5f + blockCoord.x,  0.5f + blockCoord.z, 0.0f + blockCoord.y, XMFLOAT4(0.0f, 0.7f, 0.0f, 1.0f)},
-      { 0.5f + blockCoord.x, -0.5f + blockCoord.z, 0.0f + blockCoord.y, XMFLOAT4(0.5f, 0.3f, 0.0f, 1.0f)},
-      {-0.5f + blockCoord.x, -0.5f + blockCoord.z, 1.0f + blockCoord.y, XMFLOAT4(0.5f, 0.3f, 0.0f, 1.0f)},
-      {-0.5f + blockCoord.x,  0.5f + blockCoord.z, 1.0f + blockCoord.y, XMFLOAT4(0.0f, 0.6f, 0.0f, 1.0f)},
-      { 0.5f + blockCoord.x,  0.5f + blockCoord.z, 1.0f + blockCoord.y, XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f)},
-      { 0.5f + blockCoord.x, -0.5f + blockCoord.z, 1.0f + blockCoord.y, XMFLOAT4(0.5f, 0.3f, 0.0f, 1.0f)}
+      {-0.5f + blockCoord.x, -0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
+      {-0.5f + blockCoord.x,  0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
+      { 0.5f + blockCoord.x,  0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
+      { 0.5f + blockCoord.x, -0.5f + blockCoord.z, 0.0f + blockCoord.y, color},
+      {-0.5f + blockCoord.x, -0.5f + blockCoord.z, 1.0f + blockCoord.y, color},
+      {-0.5f + blockCoord.x,  0.5f + blockCoord.z, 1.0f + blockCoord.y, color},
+      { 0.5f + blockCoord.x,  0.5f + blockCoord.z, 1.0f + blockCoord.y, color},
+      { 0.5f + blockCoord.x, -0.5f + blockCoord.z, 1.0f + blockCoord.y, color}
   };
 
   D3D11_BUFFER_DESC bd;

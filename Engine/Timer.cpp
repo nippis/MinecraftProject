@@ -111,6 +111,11 @@ double Timer::getDeltaTime() const
 	return deltaTime;
 }
 
+bool Timer::stopped()
+{
+	return isStopped;
+}
+
 double Timer::getTotalTime() const
 {
 	// this function returns the total time since the game started: (t_now - t_start) - t_totalIdle

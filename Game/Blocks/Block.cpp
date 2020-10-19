@@ -1,6 +1,6 @@
 #include "Block.h"
 
-Block::Block(BlockCoord location, BlockColor color) :
+Block::Block(BlockCoord location, DirectX::XMFLOAT4 color) :
   m_location(location), m_color(color)
 {
 
@@ -20,7 +20,7 @@ BlockCoord Block::GetLocation()
   return m_location;
 }
 
-BlockColor Block::GetColor()
+DirectX::XMFLOAT4 Block::GetColor()
 {
   return m_color;
 }

@@ -20,8 +20,20 @@ int World::CreateTerrain()
       int z = 0;
 
       BlockCoord newCoords = { x, y, z };
-      std::shared_ptr<Dirt> newBlock = std::make_shared<Dirt>(newCoords);
+      std::shared_ptr<Block> newBlock = std::make_shared<Dirt>(newCoords);
       m_blocks->push_back(newBlock);
+    }
+  }
+
+  for (int x = -WORLD_SIZE / 2; x < WORLD_SIZE / 2; x++)
+  {
+    for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
+    {
+      int z = -1;
+
+      BlockCoord newCoords = { x, y, z };
+      std::shared_ptr<Block> newBlock2 = std::make_shared<Stone>(newCoords);
+      m_blocks->push_back(newBlock2);
     }
   }
 

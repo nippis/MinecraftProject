@@ -1,19 +1,16 @@
 #pragma once
 
+#include <DirectXMath.h>
+
 struct BlockCoord
 {
   int x, y, z;
 };
 
-struct BlockColor
-{
-  float r, g, b;
-};
-
 class Block
 {
 protected:
-  Block(BlockCoord location, BlockColor color);
+  Block(BlockCoord location, DirectX::XMFLOAT4 color);
 
 public:
   virtual ~Block();
@@ -21,10 +18,10 @@ public:
   virtual bool Break();
 
   BlockCoord GetLocation();
-  BlockColor GetColor();
+  DirectX::XMFLOAT4 GetColor();
 
 private:
   BlockCoord m_location;
-  BlockColor m_color;
+  DirectX::XMFLOAT4 m_color;
 };
 

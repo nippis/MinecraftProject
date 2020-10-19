@@ -1,3 +1,5 @@
+#pragma once
+
 #include <windows.h>
 #include <windowsx.h>
 #include <profileapi.h>
@@ -27,6 +29,8 @@ public:
 	// getters: return time measured in seconds
 	double getTotalTime() const;		// returns the total time the game has been running (minus paused time)
 	double getDeltaTime() const;		// returns the time between two frames
+
+	bool stopped();
 
 	// methods
 	void start();		// starts the timer, called each time the game is unpaused
