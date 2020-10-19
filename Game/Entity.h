@@ -8,6 +8,7 @@
 struct BoundingBox
 {
   BoundingBox(DirectX::XMVECTOR location, float height, float width, float depth);
+  void Update(DirectX::XMVECTOR movement);
 
   float Xmin;
   float Xmax;

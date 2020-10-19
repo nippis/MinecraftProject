@@ -1,9 +1,10 @@
 #include "../Game/Player.h"
 
 Player::Player(std::shared_ptr<Timer> timer) :
-  Entity(DirectX::XMVectorZero(), 2.0f, 0.5f, 0.5f),
-  m_jumpState(0.0f),
-  m_jumpTimer(timer)
+  Entity({0.0f, -1.0f, 0.0f, 0.0f}, 2.0f, 0.5f, 0.5f),
+  m_jumpTimer(timer),
+  m_dropSpeed(0.0f),
+  m_dropping(false)
 {
   m_jumpTimer->stop();
 }
@@ -20,12 +21,19 @@ DirectX::XMVECTOR Player::GetRotation()
 
 DirectX::XMMATRIX Player::GetMovement()
 {
-  return m_movement->GetMovement() * XMMatrixTranslation(0.0f, -GetJumpHeight(), 0.0f);
+  return m_movement->GetMovement();
+}
+
+bool Player::IsDropping()
+{
+  return m_dropping;
 }
 
 void Player::Move(XMVECTOR movement, double deltaTime)
 {
   m_movement->AddLocation(movement * MOVEMENT_SPEED * deltaTime);
+  m_bBox->Update(movement * MOVEMENT_SPEED * deltaTime);
+
 }
 
 void Player::Rotate(XMVECTOR rotation, double deltaTime)
@@ -35,28 +43,30 @@ void Player::Rotate(XMVECTOR rotation, double deltaTime)
 
 bool Player::Jump()
 {
-  if (m_jumpState <= 0)
+  if (m_dropSpeed == 0.0f)
   {
-    m_jumpState += m_jumpTimer->getDeltaTime() / JUMP_DURATION;
+    m_dropSpeed = -5.0f;
+    m_dropping = true;
+    XMVECTOR direction = { 0.0f, 1.0f, 0.0f, 0.0f };
+    m_movement->AddLocation(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
+    m_bBox->Update(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
     return true;
   }
   else
-  {
     return false;
-  }
 }
 
-float Player::GetJumpHeight()
+void Player::Drop()
 {
-  if (m_jumpState > 0.0f && m_jumpState < 1.0f)
-  {
-    m_jumpState += m_jumpTimer->getDeltaTime() / JUMP_DURATION;
-    return float(-pow((2.0 * m_jumpState - 1.0), (2.0)) + 1.0);
-  }
-  else
-  {
-    m_jumpState = 0.0f;
-    return m_jumpState;
-  }
+  m_dropping = true;
+  m_dropSpeed += m_jumpTimer->getDeltaTime() * DROP_ACCELERATION;
+  XMVECTOR direction = { 0.0f, 1.0f, 0.0f, 0.0f };
+  m_movement->AddLocation(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
+  m_bBox->Update(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
+}
 
+void Player::Stop()
+{
+  m_dropping = false;
+  m_dropSpeed = 0.0f;
 }

@@ -33,12 +33,31 @@ void Game::run(MSG *msg)
     calculateFrameStatistics();
 
     MoveDir direction = MovementDirection();
+
+    bool onGround = false;
+    for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
+    {
+      if (m_cDetector->CollideY(m_player, block))
+      {
+        onGround = true;
+        break;
+      }
+    }
+    if (!onGround)
+    {
+      m_player->Drop();
+    }
+    else
+    {
+      m_player->Stop();
+    }
+
     if (m_keyboard->JumpInQueue())
       m_player->Jump();
 
-
     // now update the game logic based on the input and the elapsed time since the last frame
-    update(m_timer->getDeltaTime(), direction);
+    if (direction != MoveDir::none)
+      update(m_timer->getDeltaTime(), direction);
 
     // generate output
     m_graphics->RenderFrame();

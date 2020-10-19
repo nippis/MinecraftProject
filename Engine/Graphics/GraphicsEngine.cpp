@@ -127,14 +127,14 @@ void GraphicsEngine::InitCamera()
   }
 
   //Camera information
-  m_camPosition = m_player->GetLocation();
+  m_camPosition = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
   m_camTarget = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
   m_camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
   //Set the View matrix
   m_camView = XMMatrixLookAtLH(m_camPosition, m_camTarget, m_camUp);
 
-  m_playerView = m_camView * XMMatrixTranslation(0.0f, -1.5f, 0.0f);
+  m_playerView = m_camView * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
   //Set the Projection matrix
   m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 1.0f, 1000.0f);
@@ -230,7 +230,7 @@ void GraphicsEngine::InitGraphics()
   m_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
   // TRIANGLE 1
-  for (auto block : *m_world->GetBlocks())
+  for (auto block : m_world->GetBlocks())
   {
     m_vertexBuffers.push_back(VertexBuffer(m_device, block->GetLocation(), block->GetColor()));
   }

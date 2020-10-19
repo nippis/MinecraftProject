@@ -2,17 +2,23 @@
 
 World::World()
 {
-  m_blocks = std::make_shared<std::vector<std::shared_ptr<Block>>>();
+  m_blocks = std::vector<std::shared_ptr<Block>>();
   CreateTerrain();
 }
 
-std::shared_ptr<std::vector<std::shared_ptr<Block>>> World::GetBlocks()
+std::vector<std::shared_ptr<Block>> World::GetBlocks()
 {
   return m_blocks;
 }
 
 int World::CreateTerrain()
 {
+  int z = 1;
+
+  DirectX::XMVECTOR newCoords = { -8, -8, z, 0.0 };
+  std::shared_ptr<Block> newBlock3 = std::make_shared<Dirt>(newCoords);
+  m_blocks.push_back(newBlock3);
+
   for (int x = -WORLD_SIZE / 2; x < WORLD_SIZE / 2; x++)
   {
     for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
@@ -21,7 +27,7 @@ int World::CreateTerrain()
 
       DirectX::XMVECTOR newCoords = { x, y, z, 0.0};
       std::shared_ptr<Block> newBlock = std::make_shared<Dirt>(newCoords);
-      m_blocks->push_back(newBlock);
+      m_blocks.push_back(newBlock);
     }
   }
 
@@ -33,9 +39,9 @@ int World::CreateTerrain()
 
       DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };
       std::shared_ptr<Block> newBlock2 = std::make_shared<Stone>(newCoords);
-      m_blocks->push_back(newBlock2);
+      m_blocks.push_back(newBlock2);
     }
   }
 
-  return m_blocks->size();
+  return m_blocks.size();
 }

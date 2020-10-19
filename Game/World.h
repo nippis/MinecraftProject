@@ -14,11 +14,11 @@ public:
   World();
   ~World() = default;
 
-  std::shared_ptr<std::vector<std::shared_ptr<Block>>> GetBlocks();
+  std::vector<std::shared_ptr<Block>> GetBlocks();
 
 private:
   int CreateTerrain();
 
-  std::shared_ptr<std::vector<std::shared_ptr<Block>>> m_blocks;
+  std::vector<std::shared_ptr<Block>> m_blocks;
 };
 
