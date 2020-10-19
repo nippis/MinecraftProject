@@ -77,8 +77,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -106,7 +106,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -153,20 +153,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ErrorLogger.cpp" />
-    <ClCompile Include="GraphicsEngine.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game\Blocks\Block.cpp" />
+    <ClCompile Include="Game\Blocks\Dirt.cpp" />
+    <ClCompile Include="Engine\ErrorLogger.cpp" />
+    <ClCompile Include="Engine\GraphicsEngine.cpp" />
+    <ClCompile Include="Engine\Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="StringConverter.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="Game\Blocks\Stone.cpp" />
+    <ClCompile Include="Engine\StringConverter.cpp" />
+    <ClCompile Include="Engine\VertexBuffer.cpp" />
+    <ClCompile Include="Game\World.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Move.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="PixelShader.hlsl">
+    <FxCompile Include="Shaders\PixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="VertexShader.hlsl">
+    <FxCompile Include="Shaders\VertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -177,10 +186,19 @@
     <None Include="Header.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ErrorLogger.h" />
-    <ClInclude Include="GraphicsEngine.h" />
-    <ClInclude Include="StringConverter.h" />
-    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Game\Blocks\Block.h" />
+    <ClInclude Include="Game\Blocks\Dirt.h" />
+    <ClInclude Include="Engine\ErrorLogger.h" />
+    <ClInclude Include="Engine\GraphicsEngine.h" />
+    <ClInclude Include="Game\Blocks\Stone.h" />
+    <ClInclude Include="Engine\StringConverter.h" />
+    <ClInclude Include="Engine\VertexBuffer.h" />
+    <ClInclude Include="Game\World.h" />
+    <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Engine\Keyboard.h" />
+    <ClInclude Include="Move.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

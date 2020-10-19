@@ -1,12 +1,15 @@
+#include <d3dcompiler.h>
+
 #include "GraphicsEngine.h"
 #include "ErrorLogger.h"
+#include "../Game/World.h"
 
 #pragma comment (lib, "d3d11.lib")
-#pragma comment (lib, "d3dx11.lib")
-#pragma comment (lib, "d3dx10.lib")
+#pragma comment(lib,"d3dcompiler.lib")
 
-GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
-  m_width(width), m_height(height)
+
+GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<Player> player) :
+  m_width(width), m_height(height), m_player(player)
 {
 
   HRESULT hr;
@@ -17,8 +20,8 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
 
   bufferDesc.Width = m_width;
   bufferDesc.Height = m_height;
-  bufferDesc.RefreshRate.Numerator = 60;
-  bufferDesc.RefreshRate.Denominator = 1;
+  bufferDesc.RefreshRate.Numerator = 0;
+  bufferDesc.RefreshRate.Denominator = 0;
   bufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
   bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
   bufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -40,7 +43,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
 
   // Set the render target
   Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer;
-  m_swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+  m_swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer);
 
   m_device->CreateRenderTargetView(pBackBuffer.Get(), NULL, &m_backbuffer);
 
@@ -81,8 +84,8 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
 
   viewport.TopLeftX = 0;
   viewport.TopLeftY = 0;
-  viewport.Width = m_width;
-  viewport.Height = m_height;
+  viewport.Width = (FLOAT)m_width;
+  viewport.Height = (FLOAT)m_height;
   viewport.MinDepth = 0;
   viewport.MaxDepth = 1;
 
@@ -112,12 +115,14 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
   }
 
   //Camera information
-  m_camPosition = XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f);
-  m_camTarget = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+  m_camPosition = XMVectorSet(m_player->GetLocation().x, m_player->GetLocation().y, m_player->GetLocation().z, 0.0f);
+  m_camTarget = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
   m_camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
   //Set the View matrix
   m_camView = XMMatrixLookAtLH(m_camPosition, m_camTarget, m_camUp);
+
+  m_playerView = m_camView * XMMatrixTranslation(0.0f, -1.5f, 0.0f);
 
   //Set the Projection matrix
   m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 1.0f, 1000.0f);
@@ -131,7 +136,8 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height) :
 
 void GraphicsEngine::RenderFrame(void)
 {
-  m_deviceContext->ClearRenderTargetView(m_backbuffer.Get(), D3DXCOLOR(0.0f, 0.2f, 0.4f, 0.0f));
+  FLOAT rgba [4] = { 0.0f, 0.2f, 0.4f, 0.0f };
+  m_deviceContext->ClearRenderTargetView(m_backbuffer.Get(), rgba);
 
   //Refresh the Depth/Stencil view
   m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -139,7 +145,7 @@ void GraphicsEngine::RenderFrame(void)
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
   m_World = XMMatrixIdentity();
 
-  m_WVP = m_World * m_camView * m_camProjection;
+  m_WVP = m_World * m_playerView * m_camProjection;
 
   cbPerObj.WVP = XMMatrixTranspose(m_WVP);
 
@@ -149,7 +155,7 @@ void GraphicsEngine::RenderFrame(void)
   // -------
 
   m_deviceContext->IASetInputLayout(m_inputLayout.Get());
-  m_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  m_deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
   m_deviceContext->RSSetState(m_rasterizerState.Get());
   m_deviceContext->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
 
@@ -161,16 +167,42 @@ void GraphicsEngine::RenderFrame(void)
   UINT stride = sizeof(VERTEX);
   UINT offset = 0;
 
-  m_deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer->GetBuffer().GetAddressOf(), &stride, &offset);
-  m_deviceContext->DrawIndexed(30, 0, 0);
+  for (auto vertexBuffer : m_vertexBuffers)
+  {
+    m_deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetBuffer().GetAddressOf(), &stride, &offset);
+    m_deviceContext->DrawIndexed(6, 12, 0);
+  }
 
 
   m_swapchain->Present(0, 0);
 }
 
-void GraphicsEngine::UpdateVertexBuffer(bool left)
+void GraphicsEngine::UpdateVertexBuffer(int direction)
 {
-
+  if (direction == 1)
+  {
+    m_playerView *= XMMatrixTranslation(0.005f, 0.0f, 0.0f);
+  }
+  else if (direction == 2)
+  {
+    m_playerView *= XMMatrixTranslation(0.0f, 0.0f, -0.005f);
+  }
+  else if (direction == 3)
+  {
+    m_playerView *= XMMatrixTranslation(-0.005f, 0.0f, 0.0f);
+  }
+  else if (direction == 4)
+  {
+    m_playerView *= XMMatrixTranslation(0.0f, 0.0f, 0.005f);
+  }
+  else if (direction == 5)
+  {
+    m_playerView *= XMMatrixRotationX(0.001f);
+  }
+  else if (direction == 6)
+  {
+    m_playerView *= XMMatrixTranslation(0.0f, 0.005f, 0.0f);
+  }
 }
 
 // -------------------------
@@ -189,7 +221,9 @@ void GraphicsEngine::InitGraphics()
         0, 4, 5,
         5, 1, 0,
         0, 3, 4,
-        3, 7, 4
+        3, 7, 4,
+        7, 6, 5,
+        7, 5, 4
   };
 
   D3D11_BUFFER_DESC indexBufferDesc;
@@ -208,8 +242,12 @@ void GraphicsEngine::InitGraphics()
   m_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
   // TRIANGLE 1
-  
-  m_vertexBuffer = std::make_shared<VertexBuffer>(m_device, m_vertices);
+  std::shared_ptr<World> world = std::make_shared<World>();
+  for (auto block : *world->GetBlocks())
+  {
+    m_vertexBuffers.push_back(VertexBuffer(m_device, block->GetLocation(), block->GetColor()));
+  }
+ 
 }
 
 
@@ -219,9 +257,9 @@ void GraphicsEngine::InitGraphics()
 void GraphicsEngine::InitPipeline()
 {
   // load and compile the two shaders
-  ID3D10Blob *VS, *PS;
-  D3DX11CompileFromFile(L"VertexShader.hlsl", 0, 0, "main", "vs_4_0", 0, 0, 0, &VS, 0, 0);
-  D3DX11CompileFromFile(L"PixelShader.hlsl", 0, 0, "main", "ps_4_0", 0, 0, 0, &PS, 0, 0);
+  ID3DBlob *VS, *PS;
+  D3DCompileFromFile(L".\\Shaders\\VertexShader.hlsl", 0, 0, "main", "vs_4_0", 0, 0, &VS, 0);
+  D3DCompileFromFile(L".\\Shaders\\PixelShader.hlsl", 0, 0, "main", "ps_4_0", 0, 0, &PS, 0);
 
   // encapsulate both shaders into shader objects
   m_device->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, m_vertexShader.GetAddressOf());
