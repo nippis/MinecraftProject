@@ -3,10 +3,10 @@
 #include <memory>
 
 
-#include "Engine/GraphicsEngine.h"
+#include "Engine/Graphics/GraphicsEngine.h"
 #include "Game/Player.h"
 #include "Engine/Keyboard.h"
-#include "Timer.h"
+#include "Engine/Timer.h"
 
 enum class MoveDir
 {

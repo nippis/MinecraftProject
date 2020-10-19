@@ -7,7 +7,7 @@
 #include <vector>
 #include <wrl.h>
 
-#include "../Game/Blocks/Block.h"
+#include "Game/Blocks/Block.h"
 
 
 

@@ -110,6 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,16 +158,16 @@
     <ClCompile Include="Game\Blocks\Block.cpp" />
     <ClCompile Include="Game\Blocks\Dirt.cpp" />
     <ClCompile Include="Engine\ErrorLogger.cpp" />
-    <ClCompile Include="Engine\GraphicsEngine.cpp" />
+    <ClCompile Include="Engine\Graphics\GraphicsEngine.cpp" />
     <ClCompile Include="Engine\Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Blocks\Stone.cpp" />
     <ClCompile Include="Engine\StringConverter.cpp" />
-    <ClCompile Include="Engine\VertexBuffer.cpp" />
+    <ClCompile Include="Engine\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="Game\World.cpp" />
     <ClCompile Include="Game\Player.cpp" />
-    <ClCompile Include="Movement.cpp" />
-    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Engine\Movement.cpp" />
+    <ClCompile Include="Engine\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -183,22 +184,19 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Header.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Blocks\Block.h" />
     <ClInclude Include="Game\Blocks\Dirt.h" />
     <ClInclude Include="Engine\ErrorLogger.h" />
-    <ClInclude Include="Engine\GraphicsEngine.h" />
+    <ClInclude Include="Engine\Graphics\GraphicsEngine.h" />
     <ClInclude Include="Game\Blocks\Stone.h" />
     <ClInclude Include="Engine\StringConverter.h" />
-    <ClInclude Include="Engine\VertexBuffer.h" />
+    <ClInclude Include="Engine\Graphics\VertexBuffer.h" />
     <ClInclude Include="Game\World.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Engine\Keyboard.h" />
-    <ClInclude Include="Movement.h" />
-    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Engine\Movement.h" />
+    <ClInclude Include="Engine\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -9,7 +9,7 @@
 #include <wrl.h>
 
 #include "VertexBuffer.h"
-#include "../Game/Player.h"
+#include "./Game/Player.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800

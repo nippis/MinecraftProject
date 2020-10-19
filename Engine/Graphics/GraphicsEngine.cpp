@@ -1,8 +1,8 @@
 #include <d3dcompiler.h>
 
 #include "GraphicsEngine.h"
-#include "ErrorLogger.h"
-#include "../Game/World.h"
+#include "Engine/ErrorLogger.h"
+#include "Game/World.h"
 
 #pragma comment (lib, "d3d11.lib")
 #pragma comment(lib,"d3dcompiler.lib")
