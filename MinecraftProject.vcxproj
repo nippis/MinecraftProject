@@ -165,7 +165,7 @@
     <ClCompile Include="Engine\VertexBuffer.cpp" />
     <ClCompile Include="Game\World.cpp" />
     <ClCompile Include="Game\Player.cpp" />
-    <ClCompile Include="Move.cpp" />
+    <ClCompile Include="Movement.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -197,7 +197,7 @@
     <ClInclude Include="Game\World.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Engine\Keyboard.h" />
-    <ClInclude Include="Move.h" />
+    <ClInclude Include="Movement.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

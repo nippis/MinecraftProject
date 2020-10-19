@@ -115,7 +115,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   }
 
   //Camera information
-  m_camPosition = XMVectorSet(m_player->GetLocation().x, m_player->GetLocation().y, m_player->GetLocation().z, 0.0f);
+  m_camPosition = m_player->GetLocation();
   m_camTarget = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
   m_camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -143,9 +143,11 @@ void GraphicsEngine::RenderFrame(void)
   m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
-  m_World = XMMatrixIdentity();
+  m_world = XMMatrixIdentity();
 
-  m_WVP = m_World * m_playerView * m_camProjection;
+  XMMATRIX playerView = m_playerView * m_player->GetMovement();
+
+  m_WVP = m_world * playerView * m_camProjection;
 
   cbPerObj.WVP = XMMatrixTranspose(m_WVP);
 
@@ -179,30 +181,7 @@ void GraphicsEngine::RenderFrame(void)
 
 void GraphicsEngine::UpdateVertexBuffer(int direction)
 {
-  if (direction == 1)
-  {
-    m_playerView *= XMMatrixTranslation(0.005f, 0.0f, 0.0f);
-  }
-  else if (direction == 2)
-  {
-    m_playerView *= XMMatrixTranslation(0.0f, 0.0f, -0.005f);
-  }
-  else if (direction == 3)
-  {
-    m_playerView *= XMMatrixTranslation(-0.005f, 0.0f, 0.0f);
-  }
-  else if (direction == 4)
-  {
-    m_playerView *= XMMatrixTranslation(0.0f, 0.0f, 0.005f);
-  }
-  else if (direction == 5)
-  {
-    m_playerView *= XMMatrixRotationX(0.001f);
-  }
-  else if (direction == 6)
-  {
-    m_playerView *= XMMatrixTranslation(0.0f, 0.005f, 0.0f);
-  }
+
 }
 
 // -------------------------

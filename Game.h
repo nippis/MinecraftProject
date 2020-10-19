@@ -8,6 +8,19 @@
 #include "Engine/Keyboard.h"
 #include "Timer.h"
 
+enum class MoveDir
+{
+  none,
+  left,
+  forwleft,
+  forw,
+  forwright,
+  right,
+  backright,
+  back,
+  backleft
+};
+
 class Game
 {
 public:
@@ -19,6 +32,7 @@ public:
 private:
 
   void calculateFrameStatistics();	// computes fps and spf
+  MoveDir MovementDirection();
 
   std::shared_ptr<GraphicsEngine> m_graphics;
   std::shared_ptr<Player> m_player;
@@ -29,6 +43,6 @@ private:
   int m_fps;							// frames per second
   double m_mspf;					    // milliseconds per frame
 
-  virtual void update(double dt);
+  virtual void update(double dt, MoveDir direction);
 };
 

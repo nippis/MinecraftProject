@@ -30,20 +30,12 @@ void Game::run(MSG *msg)
     // compute fps
     calculateFrameStatistics();
 
+    MoveDir direction = MovementDirection();
+
     // acquire input
-    if (m_keyboard->IsPressed(VK_LEFT))
-      m_graphics->UpdateVertexBuffer(1);
-    if (m_keyboard->IsPressed(VK_UP))
-      m_graphics->UpdateVertexBuffer(2);
-    if (m_keyboard->IsPressed(VK_RIGHT))
-      m_graphics->UpdateVertexBuffer(3);
-    if (m_keyboard->IsPressed(VK_DOWN))
-      m_graphics->UpdateVertexBuffer(4);
-    if (m_keyboard->IsPressed(0x57))
-      m_graphics->UpdateVertexBuffer(5);
 
     // now update the game logic based on the input and the elapsed time since the last frame
-    update(m_timer->getDeltaTime());
+    update(m_timer->getDeltaTime(), direction);
 
     // generate output
     m_graphics->RenderFrame();
@@ -69,6 +61,64 @@ void Game::calculateFrameStatistics()
   }
 }
 
-void Game::update(double dt)
+MoveDir Game::MovementDirection()
 {
+  MoveDir direction = MoveDir::none;
+
+  if (m_keyboard->IsPressed(KEY_LEFT))
+    direction = MoveDir::left;
+  if (m_keyboard->IsPressed(KEY_FORW))
+    direction = MoveDir::forw;
+  if (m_keyboard->IsPressed(KEY_RIGHT))
+    direction = MoveDir::right;
+  if (m_keyboard->IsPressed(KEY_BACK))
+    direction = MoveDir::back;
+
+  if (m_keyboard->IsPressed(KEY_LEFT) && m_keyboard->IsPressed(KEY_FORW))
+    direction = MoveDir::forwleft;
+  if (m_keyboard->IsPressed(KEY_RIGHT) && m_keyboard->IsPressed(KEY_FORW))
+    direction = MoveDir::forwright;
+  if (m_keyboard->IsPressed(KEY_RIGHT) && m_keyboard->IsPressed(KEY_BACK))
+    direction = MoveDir::backright;
+  if (m_keyboard->IsPressed(KEY_LEFT) && m_keyboard->IsPressed(KEY_BACK))
+    direction = MoveDir::backleft;
+  if (m_keyboard->IsPressed(KEY_FORW) && m_keyboard->IsPressed(KEY_BACK))
+    direction = MoveDir::none;
+  if (m_keyboard->IsPressed(KEY_LEFT) && m_keyboard->IsPressed(KEY_RIGHT))
+    direction = MoveDir::none;
+
+  return direction;
+}
+
+void Game::update(double dt, MoveDir direction)
+{
+  XMVECTOR movement = { 0.0, 0.0, 0.0, 0.0 };
+  switch (direction)
+  {
+    case (MoveDir::left):
+      movement = { 1.0f, 0.0f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::forw):
+      movement = { 0.0f, 0.0f, -1.0f, 0.0f };
+      break;
+    case (MoveDir::right):
+      movement = { -1.0f, 0.0f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::back):
+      movement = { 0.0f, 0.0f, 1.0f, 0.0f };
+      break;
+    case (MoveDir::forwleft):
+      movement = { 0.707f, 0.0f, -0.707f, 0.0f };
+      break;
+    case (MoveDir::forwright):
+      movement = { -0.707f, 0.0f, -0.707f, 0.0f };
+      break;
+    case (MoveDir::backleft):
+      movement = { 0.707f, 0.0f, 0.707f, 0.0f };
+      break;
+    case (MoveDir::backright):
+      movement = { -0.707f, 0.0f, 0.707f, 0.0f };
+      break;
+  }
+  m_player->Move(movement, dt);
 }

@@ -40,7 +40,7 @@ private:
   XMMATRIX m_cube1World;
 
   XMMATRIX m_WVP;
-  XMMATRIX m_World;
+  XMMATRIX m_world;
   XMMATRIX m_camView;
   XMMATRIX m_playerView;
   XMMATRIX m_camProjection;
