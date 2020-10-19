@@ -7,18 +7,20 @@
 
 struct BoundingBox
 {
-  DirectX::XMVECTOR Xmin;
-  DirectX::XMVECTOR Xmax;
-  DirectX::XMVECTOR Ymin;
-  DirectX::XMVECTOR Ymax;
-  DirectX::XMVECTOR Zmin;
-  DirectX::XMVECTOR Zmax;
+  BoundingBox(DirectX::XMVECTOR location, float height, float width, float depth);
+
+  float Xmin;
+  float Xmax;
+  float Ymin;
+  float Ymax;
+  float Zmin;
+  float Zmax;
 };
 
 class Entity
 {
 public:
-  Entity(DirectX::XMVECTOR location);
+  Entity(DirectX::XMVECTOR location, float height, float width, float depth);
   ~Entity();
 
   DirectX::XMVECTOR GetLocation();
@@ -28,5 +30,9 @@ public:
 protected:
   std::shared_ptr<BoundingBox> m_bBox;
   std::shared_ptr<Movement> m_movement;
+
+  float m_height;
+  float m_width;
+  float m_depth;
 };
 

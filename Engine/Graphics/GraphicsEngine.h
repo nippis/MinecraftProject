@@ -10,6 +10,7 @@
 
 #include "VertexBuffer.h"
 #include "./Game/Player.h"
+#include "Game/World.h"
 
 #define SCREEN_WIDTH 1000
 #define SCREEN_HEIGHT 600
@@ -24,7 +25,7 @@ struct cbPerObject
 class GraphicsEngine
 {
 public:
-  GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<Player> player);
+  GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<World> world, std::shared_ptr<Player> player);
   ~GraphicsEngine() = default;
 
   void RenderFrame();
@@ -41,7 +42,7 @@ private:
   XMMATRIX m_cube1World;
 
   XMMATRIX m_WVP;
-  XMMATRIX m_world;
+  XMMATRIX m_worldMatrix;
   XMMATRIX m_camView;
   XMMATRIX m_playerView;
   XMMATRIX m_camProjection;
@@ -74,5 +75,6 @@ private:
   cbPerObject cbPerObj;
 
   std::shared_ptr<Player> m_player;
+  std::shared_ptr<World> m_world;
 };
 

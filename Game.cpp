@@ -2,10 +2,12 @@
 
 Game::Game(HWND hWnd, std::shared_ptr<Keyboard> keyboard) :
   m_timer(std::make_shared<Timer>()),
-  m_keyboard(keyboard)
+  m_keyboard(keyboard),
+  m_cDetector(std::make_shared<CollisionDetector>()),
+  m_world(std::make_shared<World>())
 {
   m_player = std::make_shared<Player>(m_timer);
-  m_graphics = std::make_shared<GraphicsEngine>(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT, m_player);
+  m_graphics = std::make_shared<GraphicsEngine>(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT, m_world, m_player);
 }
 
 void Game::run(MSG *msg)

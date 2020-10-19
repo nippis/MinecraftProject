@@ -1,7 +1,10 @@
 #include "Entity.h"
 
-Entity::Entity(DirectX::XMVECTOR location) :
-  m_movement(std::make_shared<Movement>(location, DirectX::XMVectorZero()))
+using namespace DirectX;
+
+Entity::Entity(XMVECTOR location, float height, float width, float depth) :
+  m_movement(std::make_shared<Movement>(location, XMVectorZero())),
+  m_bBox(std::make_shared<BoundingBox>(location, height, width, depth))
 {
 }
 
@@ -9,7 +12,7 @@ Entity::~Entity()
 {
 }
 
-DirectX::XMVECTOR Entity::GetLocation()
+XMVECTOR Entity::GetLocation()
 {
   return m_movement->GetLocation();
 }
@@ -17,4 +20,14 @@ DirectX::XMVECTOR Entity::GetLocation()
 std::shared_ptr<BoundingBox> Entity::GetBoundingBox()
 {
   return m_bBox;
+}
+
+BoundingBox::BoundingBox(XMVECTOR location, float height, float width, float depth)
+{
+  Xmin = XMVectorGetX(location) - width / 2;
+  Xmax = XMVectorGetX(location) + width / 2;
+  Ymin = XMVectorGetY(location) - height / 2;
+  Ymax = XMVectorGetY(location) + height / 2;
+  Zmin = XMVectorGetZ(location) - depth / 2;
+  Zmax = XMVectorGetZ(location) + depth / 2;
 }

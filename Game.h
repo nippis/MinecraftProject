@@ -7,6 +7,7 @@
 #include "Game/Player.h"
 #include "Engine/Keyboard.h"
 #include "Engine/Timer.h"
+#include "Engine/CollisionDetector.h"
 
 enum class MoveDir
 {
@@ -34,9 +35,12 @@ private:
   void calculateFrameStatistics();	// computes fps and spf
   MoveDir MovementDirection();
 
+  std::shared_ptr<World> m_world;
+
   std::shared_ptr<GraphicsEngine> m_graphics;
   std::shared_ptr<Player> m_player;
   std::shared_ptr<Keyboard> m_keyboard;
+  std::shared_ptr<CollisionDetector> m_cDetector;
 
   // timer
   std::shared_ptr<Timer> m_timer;					// high-precision timer

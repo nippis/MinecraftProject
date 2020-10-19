@@ -2,14 +2,14 @@
 
 #include "GraphicsEngine.h"
 #include "Engine/ErrorLogger.h"
-#include "Game/World.h"
+
 
 #pragma comment (lib, "d3d11.lib")
 #pragma comment(lib,"d3dcompiler.lib")
 
 
-GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<Player> player) :
-  m_width(width), m_height(height), m_player(player)
+GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<World> world, std::shared_ptr<Player> player) :
+  m_width(width), m_height(height), m_player(player), m_world(world)
 {
 
   HRESULT hr;
@@ -152,11 +152,11 @@ void GraphicsEngine::RenderFrame(void)
   m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
-  m_world = XMMatrixIdentity();
+  m_worldMatrix = XMMatrixIdentity();
 
   XMMATRIX playerView = m_playerView * m_player->GetMovement();
 
-  m_WVP = m_world * playerView * m_camProjection;
+  m_WVP = m_worldMatrix * playerView * m_camProjection;
 
   cbPerObj.WVP = XMMatrixTranspose(m_WVP);
 
@@ -230,8 +230,7 @@ void GraphicsEngine::InitGraphics()
   m_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
   // TRIANGLE 1
-  std::shared_ptr<World> world = std::make_shared<World>();
-  for (auto block : *world->GetBlocks())
+  for (auto block : *m_world->GetBlocks())
   {
     m_vertexBuffers.push_back(VertexBuffer(m_device, block->GetLocation(), block->GetColor()));
   }

@@ -1,7 +1,7 @@
 #include "../Game/Player.h"
 
 Player::Player(std::shared_ptr<Timer> timer) :
-  Entity(DirectX::XMVectorZero()),
+  Entity(DirectX::XMVectorZero(), 2.0f, 0.5f, 0.5f),
   m_jumpState(0.0f),
   m_jumpTimer(timer)
 {

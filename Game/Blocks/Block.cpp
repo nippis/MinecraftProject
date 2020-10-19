@@ -1,7 +1,7 @@
 #include "Block.h"
 
 Block::Block(DirectX::XMVECTOR location, DirectX::XMFLOAT4 color) :
-  Entity(location),  m_color(color)
+  Entity(location, 1.0, 1.0, 1.0),  m_color(color)
 {
 
 }
