@@ -1,7 +1,7 @@
 #include "../Game/Player.h"
 
 Player::Player(std::shared_ptr<Timer> timer) :
-  m_movement(std::make_shared<Movement>()),
+  Entity(DirectX::XMVectorZero()),
   m_jumpState(0.0f),
   m_jumpTimer(timer)
 {
@@ -11,11 +11,6 @@ Player::Player(std::shared_ptr<Timer> timer) :
 Player::~Player()
 {
 
-}
-
-DirectX::XMVECTOR Player::GetLocation()
-{
-  return m_movement->GetLocation();
 }
 
 DirectX::XMVECTOR Player::GetRotation()

@@ -3,6 +3,8 @@
 #include <DirectXMath.h>
 #include <memory>
 
+#include "Engine/Movement.h"
+
 struct BoundingBox
 {
   DirectX::XMVECTOR Xmin;
@@ -23,8 +25,8 @@ public:
 
   std::shared_ptr<BoundingBox> GetBoundingBox();
 
-private:
+protected:
   std::shared_ptr<BoundingBox> m_bBox;
-  DirectX::XMVECTOR m_location;
+  std::shared_ptr<Movement> m_movement;
 };
 

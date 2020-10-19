@@ -6,17 +6,15 @@
 class Block :
   public Entity
 {
-protected:
-  Block(DirectX::XMVECTOR location, DirectX::XMFLOAT4 color);
-
 public:
+  Block(DirectX::XMVECTOR location, DirectX::XMFLOAT4 color);
   virtual ~Block();
 
   virtual bool Break();
 
   DirectX::XMFLOAT4 GetColor();
 
-private:
+protected:
   DirectX::XMFLOAT4 m_color;
 };
 

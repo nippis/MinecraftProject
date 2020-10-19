@@ -5,14 +5,15 @@
 
 #include "Engine/Movement.h"
 #include "Engine/Timer.h"
+#include "Game/Entity.h"
 
-class Player
+class Player :
+  public Entity
 {
 public:
   Player(std::shared_ptr<Timer> timer);
   virtual ~Player();
 
-  DirectX::XMVECTOR GetLocation();
   DirectX::XMVECTOR GetRotation();
   DirectX::XMMATRIX GetMovement();
 
@@ -28,7 +29,6 @@ private:
   float GetJumpHeight();
   
   float m_jumpState;
-  std::shared_ptr<Movement> m_movement;
   std::shared_ptr<Timer> m_jumpTimer;
 
 };
