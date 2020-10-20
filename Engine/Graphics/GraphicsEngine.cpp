@@ -129,7 +129,7 @@ void GraphicsEngine::InitCamera()
   //Camera information
   m_camPosition = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
   m_camTarget = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-  m_camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+  m_camUp = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
   
 
@@ -154,7 +154,7 @@ void GraphicsEngine::RenderFrame(void)
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
   m_worldMatrix = XMMatrixIdentity();
 
-  m_camView = XMMatrixLookToLH(m_camPosition + m_player->GetLocation(), m_camTarget + m_player->GetRotation(), m_camUp);
+  m_camView = XMMatrixLookToLH(m_camPosition + m_player->GetLocation() + XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), m_camTarget + m_player->GetRotation(), m_camUp);
 
   m_WVP = m_worldMatrix * m_camView *m_camProjection;
 

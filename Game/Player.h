@@ -27,8 +27,8 @@ public:
 
   const float MOVEMENT_SPEED = 2.0f; // Movement per second
   const float ROTATION_SPEED = 3.14f; // Rotation per second 
-  const float JUMP_DURATION = 1.0f; // Jump duration in seconds
-  const float DROP_ACCELERATION = 10.0f; // Dropping acceleration u/s^2
+  const float JUMP_SPEED = 3.0f; // Jump duration in seconds
+  const float DROP_ACCELERATION = 5.0f; // Dropping acceleration u/s^2
              
 private:     
   std::shared_ptr<Timer> m_jumpTimer;

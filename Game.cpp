@@ -117,29 +117,29 @@ void Game::update(double dt, MoveDir direction)
   XMVECTOR movement = { 0.0, 0.0, 0.0, 0.0 };
   switch (direction)
   {
-    case (MoveDir::left):
-      movement = { 1.0f, 0.0f, 0.0f, 0.0f };
-      break;
-    case (MoveDir::forw):
-      movement = { 0.0f, 1.0f, 0.0f, 0.0f };
-      break;
-    case (MoveDir::right):
-      movement = { 0.0f, 0.0f, 1.0f, 0.0f };
-      break;
     case (MoveDir::back):
       movement = { -1.0f, 0.0f, 0.0f, 0.0f };
       break;
-    case (MoveDir::forwleft):
-      movement = { 0.707f, 0.0f, -0.707f, 0.0f };
+    case (MoveDir::right):
+      movement = { 0.0f, 1.0f, 0.0f, 0.0f };
       break;
-    case (MoveDir::forwright):
-      movement = { -0.707f, 0.0f, -0.707f, 0.0f };
+    case (MoveDir::forw):
+      movement = { 1.0f, 0.0f, 0.0f, 0.0f };
       break;
-    case (MoveDir::backleft):
-      movement = { 0.707f, 0.0f, 0.707f, 0.0f };
+    case (MoveDir::left):
+      movement = { 0.0f, -1.0f, 0.0f, 0.0f };
       break;
     case (MoveDir::backright):
-      movement = { -0.707f, 0.0f, 0.707f, 0.0f };
+      movement = { -0.707f, 0.707f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::forwright):
+      movement = { 0.707f, 0.707f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::backleft):
+      movement = { -0.707f, -0.707f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::forwleft):
+      movement = { 0.707f, -0.707f, 0.0f, 0.0f };
       break;
   }
   m_player->Move(movement, dt);
