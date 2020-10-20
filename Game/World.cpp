@@ -13,35 +13,15 @@ std::vector<std::shared_ptr<Block>> World::GetBlocks()
 
 int World::CreateTerrain()
 {
-  int z = 1;
-
-  DirectX::XMVECTOR newCoords = { -8, -8, z, 0.0 };
-  std::shared_ptr<Block> newBlock3 = std::make_shared<Dirt>(newCoords);
-  m_blocks.push_back(newBlock3);
-
+  int y = 0;
   for (int x = -WORLD_SIZE / 2; x < WORLD_SIZE / 2; x++)
   {
-    for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
+    for (int z = -WORLD_SIZE / 2; z < WORLD_SIZE / 2; z++)
     {
-      int z = 0;
-
-      DirectX::XMVECTOR newCoords = { x, y, z, 0.0};
+      DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };
       std::shared_ptr<Block> newBlock = std::make_shared<Dirt>(newCoords);
       m_blocks.push_back(newBlock);
     }
   }
-
-  for (int x = -WORLD_SIZE / 2; x < WORLD_SIZE / 2; x++)
-  {
-    for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
-    {
-      int z = -1;
-
-      DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };
-      std::shared_ptr<Block> newBlock2 = std::make_shared<Stone>(newCoords);
-      m_blocks.push_back(newBlock2);
-    }
-  }
-
   return m_blocks.size();
 }

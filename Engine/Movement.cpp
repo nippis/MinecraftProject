@@ -41,7 +41,7 @@ XMMATRIX Movement::GetMovement()
   movement *= XMMatrixTranslationFromVector(m_location);
   movement *= XMMatrixRotationRollPitchYawFromVector(m_rotation);
 
-  return movement;
+  return XMMatrixTranslationFromVector(m_location);
 }
 
 XMVECTOR Movement::GetLocation()

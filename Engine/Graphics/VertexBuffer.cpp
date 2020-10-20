@@ -23,14 +23,14 @@ HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, Di
   using namespace DirectX;
   std::vector<VERTEX> vertices =
   {
-      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
-      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
-      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
-      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 0.0f + XMVectorGetY(blockCoord), color},
-      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color},
-      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color},
-      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color},
-      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetZ(blockCoord), 1.0f + XMVectorGetY(blockCoord), color}
+      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), color},
+      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), color},
+      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), color},
+      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), color},
+      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), color}
   };
 
   D3D11_BUFFER_DESC bd;

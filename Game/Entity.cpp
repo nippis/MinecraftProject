@@ -25,20 +25,20 @@ std::shared_ptr<BoundingBox> Entity::GetBoundingBox()
 
 BoundingBox::BoundingBox(XMVECTOR location, float height, float width, float depth)
 {
-  Xmin = XMVectorGetX(location) - width / 2;
-  Xmax = XMVectorGetX(location) + width / 2;
-  Ymin = XMVectorGetZ(location) - height / 2;
-  Ymax = XMVectorGetZ(location) + height / 2;
-  Zmin = XMVectorGetY(location) - depth / 2;
-  Zmax = XMVectorGetY(location) + depth / 2;
+  Xmin = XMVectorGetX(location) - abs(width  / 2);
+  Xmax = XMVectorGetX(location) + abs(width  / 2);
+  Ymin = XMVectorGetY(location) - abs(height / 2);
+  Ymax = XMVectorGetY(location) + abs(height / 2);
+  Zmin = XMVectorGetZ(location) - abs(depth  / 2);
+  Zmax = XMVectorGetZ(location) + abs(depth  / 2);
 }
 
 void BoundingBox::Update(XMVECTOR movement)
 {
   Xmin += XMVectorGetX(movement);
   Xmax += XMVectorGetX(movement);
-  Ymin += XMVectorGetZ(movement);
-  Ymax += XMVectorGetZ(movement);
-  Zmin += XMVectorGetY(movement);
-  Zmax += XMVectorGetY(movement);
+  Ymin += XMVectorGetY(movement);
+  Ymax += XMVectorGetY(movement);
+  Zmin += XMVectorGetZ(movement);
+  Zmax += XMVectorGetZ(movement);
 }

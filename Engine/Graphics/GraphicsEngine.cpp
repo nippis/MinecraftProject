@@ -131,10 +131,10 @@ void GraphicsEngine::InitCamera()
   m_camTarget = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
   m_camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-  //Set the View matrix
-  m_camView = XMMatrixLookAtLH(m_camPosition, m_camTarget, m_camUp);
+  
 
-  m_playerView = m_camView * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+  //Set the View matrix
+  
 
   //Set the Projection matrix
   m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 1.0f, 1000.0f);
@@ -154,9 +154,9 @@ void GraphicsEngine::RenderFrame(void)
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
   m_worldMatrix = XMMatrixIdentity();
 
-  XMMATRIX playerView = m_playerView * m_player->GetMovement();
+  m_camView = XMMatrixLookToLH(m_camPosition + m_player->GetLocation(), m_camTarget + m_player->GetRotation(), m_camUp);
 
-  m_WVP = m_worldMatrix * playerView * m_camProjection;
+  m_WVP = m_worldMatrix * m_camView *m_camProjection;
 
   cbPerObj.WVP = XMMatrixTranspose(m_WVP);
 

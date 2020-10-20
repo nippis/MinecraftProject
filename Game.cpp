@@ -121,13 +121,13 @@ void Game::update(double dt, MoveDir direction)
       movement = { 1.0f, 0.0f, 0.0f, 0.0f };
       break;
     case (MoveDir::forw):
-      movement = { 0.0f, 0.0f, -1.0f, 0.0f };
+      movement = { 0.0f, 1.0f, 0.0f, 0.0f };
       break;
     case (MoveDir::right):
-      movement = { -1.0f, 0.0f, 0.0f, 0.0f };
+      movement = { 0.0f, 0.0f, 1.0f, 0.0f };
       break;
     case (MoveDir::back):
-      movement = { 0.0f, 0.0f, 1.0f, 0.0f };
+      movement = { -1.0f, 0.0f, 0.0f, 0.0f };
       break;
     case (MoveDir::forwleft):
       movement = { 0.707f, 0.0f, -0.707f, 0.0f };
