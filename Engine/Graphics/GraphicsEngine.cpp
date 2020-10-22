@@ -126,22 +126,16 @@ void GraphicsEngine::InitCamera()
     ErrorLogger::Log(hr, "Ei nyt toiminu tää kamerabufferin teko");
   }
 
-  //Camera information
-  m_camPosition = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-  m_camTarget = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-  m_camUp = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-
-  
-
   //Set the View matrix
-  
+  m_camPosition = m_camPositionOrig;
+  m_camTarget = m_camTargetOrig;
+  m_camUp = m_camUpOrig;
 
   //Set the Projection matrix
   m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 1.0f, 1000.0f);
 
   // -------------------------
 }
-
 
 void GraphicsEngine::RenderFrame(void)
 {
@@ -154,10 +148,32 @@ void GraphicsEngine::RenderFrame(void)
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
   m_worldMatrix = XMMatrixIdentity();
 
-  m_camView = XMMatrixLookToLH(m_camPosition + m_player->GetLocation() + XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), m_camTarget + m_player->GetRotation(), m_camUp);
+  // Calculate the camera rotation relative to player coordinates
+  DirectX::XMVECTOR camTargetRotY = XMVector4Transform(m_camTargetOrig, XMMatrixRotationZ(XMVectorGetZ(m_player->GetRotation())));
+  DirectX::XMVECTOR camUpRotY = XMVector4Transform(m_camUpOrig, XMMatrixRotationZ(XMVectorGetZ(m_player->GetRotation())));
+  m_camTarget = XMVector4Transform(
+    camTargetRotY,
+    XMMatrixRotationAxis(
+      XMVector3Cross(
+        camTargetRotY,
+        camUpRotY),
+      XMVectorGetY(
+        m_player->GetRotation())));
+  m_camUp = XMVector4Transform(
+    camUpRotY,
+    XMMatrixRotationAxis(
+      XMVector3Cross(
+        camTargetRotY,
+        camUpRotY),
+      XMVectorGetY(
+        m_player->GetRotation())));
+  
+  // Calculate player position
+  m_camPosition = m_camPositionOrig + m_player->GetLocation() + XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
-  m_WVP = m_worldMatrix * m_camView *m_camProjection;
-
+  m_camView = XMMatrixLookToLH(m_camPosition, m_camTarget, m_camUp);
+  m_WVP = m_worldMatrix * m_camView * m_camProjection;
+  
   cbPerObj.WVP = XMMatrixTranspose(m_WVP);
 
   m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer.Get(), 0, NULL, &cbPerObj, 0, 0);
@@ -191,6 +207,17 @@ void GraphicsEngine::RenderFrame(void)
 void GraphicsEngine::UpdateVertexBuffer(int direction)
 {
 
+}
+
+XMVECTOR GraphicsEngine::GetCamForward()
+{
+  return XMVectorSet(XMVectorGetX(m_camTarget), XMVectorGetY(m_camTarget), 0.0f, 0.0f);
+}
+
+XMVECTOR GraphicsEngine::GetCamLeft()
+{
+  XMVECTOR camLeft = XMVector3Cross(m_camUp, m_camTarget);
+  return XMVectorSet(XMVectorGetX(camLeft), XMVectorGetY(camLeft), 0.0f, 0.0f);
 }
 
 // -------------------------

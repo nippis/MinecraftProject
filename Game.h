@@ -34,6 +34,7 @@ private:
 
   void calculateFrameStatistics();	// computes fps and spf
   MoveDir MovementDirection();
+  MoveDir RotationDirection();
 
   std::shared_ptr<World> m_world;
 
@@ -47,6 +48,6 @@ private:
   int m_fps;							// frames per second
   double m_mspf;					    // milliseconds per frame
 
-  virtual void update(double dt, MoveDir direction);
+  virtual void update(double dt, MoveDir direction, MoveDir rotation);
 };
 

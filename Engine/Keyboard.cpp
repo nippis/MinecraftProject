@@ -17,7 +17,10 @@ void Keyboard::SetState(UINT message, WPARAM keycode)
   }
   else if (message == WM_KEYUP)
   {
-    m_keyStates.at(keycode) = false;
+    if (m_keyStates.find(keycode) == m_keyStates.end())
+      m_keyStates.insert({ keycode, false });
+    else
+      m_keyStates.at(keycode) = false;
   }
 }
 

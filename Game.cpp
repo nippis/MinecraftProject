@@ -33,6 +33,7 @@ void Game::run(MSG *msg)
     calculateFrameStatistics();
 
     MoveDir direction = MovementDirection();
+    MoveDir rotation = RotationDirection();
 
     bool onGround = false;
     for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
@@ -56,8 +57,8 @@ void Game::run(MSG *msg)
       m_player->Jump();
 
     // now update the game logic based on the input and the elapsed time since the last frame
-    if (direction != MoveDir::none)
-      update(m_timer->getDeltaTime(), direction);
+    if (direction != MoveDir::none || rotation != MoveDir::none)
+      update(m_timer->getDeltaTime(), direction, rotation);
 
     // generate output
     m_graphics->RenderFrame();
@@ -112,22 +113,52 @@ MoveDir Game::MovementDirection()
   return direction;
 }
 
-void Game::update(double dt, MoveDir direction)
+MoveDir Game::RotationDirection()
+{
+  MoveDir direction = MoveDir::none;
+
+  if (m_keyboard->IsPressed(KEY_YAW_LEFT))
+    direction = MoveDir::left;
+  if (m_keyboard->IsPressed(KEY_PITCH_UP))
+    direction = MoveDir::forw;
+  if (m_keyboard->IsPressed(KEY_YAW_RIGHT))
+    direction = MoveDir::right;
+  if (m_keyboard->IsPressed(KEY_PITCH_DOWN))
+    direction = MoveDir::back;
+
+  if (m_keyboard->IsPressed(KEY_YAW_LEFT) && m_keyboard->IsPressed(KEY_PITCH_UP))
+    direction = MoveDir::forwleft;
+  if (m_keyboard->IsPressed(KEY_YAW_RIGHT) && m_keyboard->IsPressed(KEY_PITCH_UP))
+    direction = MoveDir::forwright;
+  if (m_keyboard->IsPressed(KEY_YAW_RIGHT) && m_keyboard->IsPressed(KEY_PITCH_DOWN))
+    direction = MoveDir::backright;
+  if (m_keyboard->IsPressed(KEY_YAW_LEFT) && m_keyboard->IsPressed(KEY_PITCH_DOWN))
+    direction = MoveDir::backleft;
+  if (m_keyboard->IsPressed(KEY_PITCH_UP) && m_keyboard->IsPressed(KEY_PITCH_DOWN))
+    direction = MoveDir::none;
+  if (m_keyboard->IsPressed(KEY_YAW_LEFT) && m_keyboard->IsPressed(KEY_YAW_RIGHT))
+    direction = MoveDir::none;
+
+  return direction;
+}
+
+void Game::update(double dt, MoveDir direction, MoveDir rotdirection)
 {
   XMVECTOR movement = { 0.0, 0.0, 0.0, 0.0 };
+  XMVECTOR rotation = { 0.0, 0.0, 0.0, 0.0 };
   switch (direction)
   {
     case (MoveDir::back):
-      movement = { -1.0f, 0.0f, 0.0f, 0.0f };
+      movement = -m_graphics->GetCamForward();
       break;
     case (MoveDir::right):
-      movement = { 0.0f, 1.0f, 0.0f, 0.0f };
+      movement = -m_graphics->GetCamLeft();
       break;
     case (MoveDir::forw):
-      movement = { 1.0f, 0.0f, 0.0f, 0.0f };
+      movement = m_graphics->GetCamForward();
       break;
     case (MoveDir::left):
-      movement = { 0.0f, -1.0f, 0.0f, 0.0f };
+      movement = m_graphics->GetCamLeft();
       break;
     case (MoveDir::backright):
       movement = { -0.707f, 0.707f, 0.0f, 0.0f };
@@ -142,5 +173,34 @@ void Game::update(double dt, MoveDir direction)
       movement = { 0.707f, -0.707f, 0.0f, 0.0f };
       break;
   }
+
+  switch (rotdirection)
+  {
+    case (MoveDir::back):
+      rotation = { 0.0f, -1.0f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::right):
+      rotation = { 0.0f, 0.0f, 1.0f, 0.0f };
+      break;
+    case (MoveDir::forw):
+      rotation = { 0.0f, 1.0f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::left):
+      rotation = { 0.0f, 0.0f, -1.0f, 0.0f };
+      break;
+    case (MoveDir::backright):
+      rotation = { -0.707f, 0.707f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::forwright):
+      rotation = { 0.707f, 0.707f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::backleft):
+      rotation = { -0.707f, -0.707f, 0.0f, 0.0f };
+      break;
+    case (MoveDir::forwleft):
+      rotation = { 0.707f, -0.707f, 0.0f, 0.0f };
+      break;
+  }
   m_player->Move(movement, dt);
+  m_player->Rotate(rotation, dt);
 }

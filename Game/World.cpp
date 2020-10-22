@@ -13,10 +13,10 @@ std::vector<std::shared_ptr<Block>> World::GetBlocks()
 
 int World::CreateTerrain()
 {
-  int z = -8;
+  int z = 0;
   for (int x = -WORLD_SIZE / 2; x < WORLD_SIZE / 2; x++)
   {
-    z++;
+    //z++;
     for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
     {
       DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };
