@@ -154,7 +154,7 @@ void GraphicsEngine::RenderFrame(void)
 
   
   // Calculate player position
-  m_camPosition = m_camPositionOrig + m_player->GetLocation() + XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+  m_camPosition = m_player->GetLocation() + XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
   m_camView = XMMatrixLookToLH(m_camPosition, m_camTarget, m_camUp);
   m_WVP = m_worldMatrix * m_camView * m_camProjection;

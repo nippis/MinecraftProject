@@ -121,13 +121,17 @@ void Controller::MovePlayer(double dt)
   switch (RotationDirection())
   {
     case (MoveDir::back):
-      rotation = -m_player->GetLeft();
+      if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2-0.07 ||
+          XMVectorGetZ(m_player->GetRotation()) >= 0.0f)
+        rotation = -m_player->GetLeft();
       break;
     case (MoveDir::right):
       rotation = { 0.0f, 0.0f, 1.0f, 0.0f };
       break;
     case (MoveDir::forw):
-      rotation = m_player->GetLeft();
+      if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2-0.07 ||
+          XMVectorGetZ(m_player->GetRotation()) <= 0.0f)
+        rotation = m_player->GetLeft();
       break;
     case (MoveDir::left):
       rotation = { 0.0f, 0.0f, -1.0f, 0.0f };
