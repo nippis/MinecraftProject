@@ -217,7 +217,7 @@ XMVECTOR GraphicsEngine::GetCamForward()
 XMVECTOR GraphicsEngine::GetCamLeft()
 {
   XMVECTOR camLeft = XMVector3Cross(m_camUp, m_camTarget);
-  return XMVectorSet(XMVectorGetX(camLeft), XMVectorGetY(camLeft), 0.0f, 0.0f);
+  return -XMVectorSet(XMVectorGetX(camLeft), XMVectorGetY(camLeft), 0.0f, 0.0f);
 }
 
 // -------------------------

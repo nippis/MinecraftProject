@@ -232,6 +232,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Controller.cpp" />
     <ClCompile Include="Engine\CollisionDetector.cpp" />
     <ClCompile Include="Game\Entity.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -248,6 +249,7 @@
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Engine\Movement.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
+    <ClCompile Include="Engine\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -268,6 +270,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Controller.h" />
     <ClInclude Include="Engine\CollisionDetector.h" />
     <ClInclude Include="Game\Entity.h" />
     <ClInclude Include="Game.h" />
@@ -283,6 +286,13 @@
     <ClInclude Include="Engine\Keyboard.h" />
     <ClInclude Include="Engine\Movement.h" />
     <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Engine\Mouse.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
