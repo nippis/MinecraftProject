@@ -8,7 +8,23 @@ CollisionDetector::~CollisionDetector()
 {
 }
 
-bool CollisionDetector::CollideY(std::shared_ptr<Entity> entity1, std::shared_ptr<Entity> entity2)
+DirectX::XMVECTOR CollisionDetector::GetCollidingNormal(std::shared_ptr<Entity> entity1, std::shared_ptr<Entity> entity2)
+{
+  DirectX::XMVECTOR distance = XMVectorAbs(entity1->GetLocation() - entity2->GetLocation());
+  DirectX::XMVECTOR collidingNormal = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+  if (XMVectorGetY(distance) > XMVectorGetX(distance))
+    collidingNormal = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+  if ((XMVectorGetZ(distance) > XMVectorGetX(distance)) && (XMVectorGetZ(distance) > XMVectorGetY(distance)))
+    collidingNormal = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+  return collidingNormal;
+}
+
+DirectX::XMVECTOR CollisionDetector::GetUnblockedDirection(DirectX::XMVECTOR dir, DirectX::XMVECTOR blockerNormal)
+{
+  return (dir + XMVector4Reflect(dir, blockerNormal)) / 2.0f;
+}
+
+bool CollisionDetector::Collide(std::shared_ptr<Entity> entity1, std::shared_ptr<Entity> entity2)
 {
   std::shared_ptr<BoundingBox> bBox1 = entity1->GetBoundingBox();
   std::shared_ptr<BoundingBox> bBox2 = entity2->GetBoundingBox();

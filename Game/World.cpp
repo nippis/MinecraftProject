@@ -16,9 +16,13 @@ int World::CreateTerrain()
   int z = 0;
   for (int x = -WORLD_SIZE / 2; x < WORLD_SIZE / 2; x++)
   {
-    //z++;
     for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
     {
+      if ((x == -WORLD_SIZE/2 ) || (x == WORLD_SIZE/2-1) ||
+          (y == -WORLD_SIZE/2) || (y == WORLD_SIZE/2-1))
+          z = 1;
+      else
+          z = 0;
       DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };
       std::shared_ptr<Block> newBlock = std::make_shared<Dirt>(newCoords);
       m_blocks.push_back(newBlock);

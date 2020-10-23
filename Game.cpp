@@ -3,12 +3,11 @@
 Game::Game(HWND hWnd, std::shared_ptr<Keyboard> keyboard) :
   m_timer(std::make_shared<Timer>()),
   m_keyboard(keyboard),
-  m_cDetector(std::make_shared<CollisionDetector>()),
   m_world(std::make_shared<World>())
 {
   m_player = std::make_shared<Player>(m_timer);
   m_graphics = std::make_shared<GraphicsEngine>(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT, m_world, m_player);
-  m_playerController = std::make_shared<Controller>(m_keyboard, nullptr, m_graphics, m_player);
+  m_playerController = std::make_shared<Controller>(m_keyboard, nullptr, m_graphics, m_player, m_world);
 }
 
 void Game::run(MSG *msg)
@@ -32,27 +31,6 @@ void Game::run(MSG *msg)
 
     // compute fps
     calculateFrameStatistics();
-
-    bool onGround = false;
-    for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
-    {
-      if (m_cDetector->CollideY(m_player, block))
-      {
-        onGround = true;
-        break;
-      }
-    }
-    if (!onGround)
-    {
-      m_player->Drop();
-    }
-    else
-    {
-      m_player->Stop();
-    }
-
-    if (m_keyboard->JumpInQueue())
-      m_player->Jump();
 
     // now update the game logic based on the input and the elapsed time since the last frame
     m_playerController->MovePlayer(m_timer->getDeltaTime());

@@ -1,7 +1,7 @@
 #include "../Game/Player.h"
 
 Player::Player(std::shared_ptr<Timer> timer) :
-  Entity({0.0f, 0.0f, 2.0f, 0.0f}, 0.5f, 0.5f, 2.0f),
+  Entity({0.0f, 0.0f, 3.0f, 0.0f}, 0.2f, 0.2f, 2.0f),
   m_jumpTimer(timer),
   m_dropSpeed(0.0f),
   m_dropping(false)

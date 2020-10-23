@@ -27,7 +27,6 @@ private:
   std::shared_ptr<GraphicsEngine> m_graphics;
   std::shared_ptr<Player> m_player;
   std::shared_ptr<Keyboard> m_keyboard;
-  std::shared_ptr<CollisionDetector> m_cDetector;
   std::shared_ptr<Controller> m_playerController;
 
   // timer

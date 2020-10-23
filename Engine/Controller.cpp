@@ -1,7 +1,12 @@
 #include "Controller.h"
 
-Controller::Controller(std::shared_ptr<Keyboard> keyboard, std::shared_ptr<Mouse> mouse, std::shared_ptr<GraphicsEngine> graphics, std::shared_ptr<Player> player) :
-  m_keyboard(keyboard), m_mouse(mouse), m_player(player), m_graphics(graphics)
+Controller::Controller(std::shared_ptr<Keyboard> keyboard, 
+                       std::shared_ptr<Mouse> mouse, 
+                       std::shared_ptr<GraphicsEngine> graphics, 
+                       std::shared_ptr<Player> player,
+                       std::shared_ptr<World> world) :
+  m_keyboard(keyboard), m_mouse(mouse), m_player(player), m_graphics(graphics), m_world(world),
+  m_collisionDetector(std::make_shared<CollisionDetector>())
 {
 
 }
@@ -149,6 +154,29 @@ void Controller::MovePlayer(double dt)
       rotation = m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 0.0f);
       break;
   }
+
+  bool onGround = false;
+  for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
+  {
+    if (m_collisionDetector->Collide(m_player, block))
+    {
+      DirectX::XMVECTOR collidingNormal = m_collisionDetector->GetCollidingNormal(m_player, block);
+      movement = m_collisionDetector->GetUnblockedDirection(movement, collidingNormal);
+      if (XMVector4Equal(collidingNormal, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)))
+          onGround = true;
+    }
+  }
+  if (!onGround)
+  {
+    m_player->Drop();
+  }
+  else
+  {
+    m_player->Stop();
+  }
+
+  if (m_keyboard->JumpInQueue())
+    m_player->Jump();
 
   m_player->Move(movement, dt);
   m_player->Rotate(rotation, dt);
