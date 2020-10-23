@@ -93,56 +93,56 @@ void Controller::MovePlayer(double dt)
   switch (MovementDirection())
   {
     case (MoveDir::back):
-      movement = -m_graphics->GetCamForward();
+      movement = -m_player->GetForward();
       break;
     case (MoveDir::right):
-      movement = -m_graphics->GetCamLeft();
+      movement = -m_player->GetLeft();
       break;
     case (MoveDir::forw):
-      movement = m_graphics->GetCamForward();
+      movement = m_player->GetForward();
       break;
     case (MoveDir::left):
-      movement = m_graphics->GetCamLeft();
+      movement = m_player->GetLeft();
       break;
     case (MoveDir::backright):
-      movement = 0.707 * (-m_graphics->GetCamForward() - m_graphics->GetCamLeft());
+      movement = 0.707 * (-m_player->GetForward() - m_player->GetLeft());
       break;
     case (MoveDir::forwright):
-      movement = 0.707 * (m_graphics->GetCamForward() - m_graphics->GetCamLeft());
+      movement = 0.707 * (m_player->GetForward() - m_player->GetLeft());
       break;
     case (MoveDir::backleft):
-      movement = 0.707 * (-m_graphics->GetCamForward() + m_graphics->GetCamLeft());
+      movement = 0.707 * (-m_player->GetForward() + m_player->GetLeft());
       break;
     case (MoveDir::forwleft):
-      movement = 0.707 * (m_graphics->GetCamForward() + m_graphics->GetCamLeft());
+      movement = 0.707 * (m_player->GetForward() + m_player->GetLeft());
       break;
   }
 
   switch (RotationDirection())
   {
     case (MoveDir::back):
-      rotation = { 0.0f, -1.0f, 0.0f, 0.0f };
+      rotation = -m_player->GetLeft();
       break;
     case (MoveDir::right):
       rotation = { 0.0f, 0.0f, 1.0f, 0.0f };
       break;
     case (MoveDir::forw):
-      rotation = { 0.0f, 1.0f, 0.0f, 0.0f };
+      rotation = m_player->GetLeft();
       break;
     case (MoveDir::left):
       rotation = { 0.0f, 0.0f, -1.0f, 0.0f };
       break;
     case (MoveDir::backright):
-      rotation = { -0.707f, 0.707f, 0.0f, 0.0f };
+      rotation = -m_player->GetLeft() * 0.707f + XMVectorSet( 0.0f, 0.0f, 0.707f, 0.0f );
       break;
     case (MoveDir::forwright):
-      rotation = { 0.707f, 0.707f, 0.0f, 0.0f };
+      rotation = m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 0.0f);
       break;
     case (MoveDir::backleft):
-      rotation = { -0.707f, -0.707f, 0.0f, 0.0f };
+      rotation = -m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 0.0f);
       break;
     case (MoveDir::forwleft):
-      rotation = { 0.707f, -0.707f, 0.0f, 0.0f };
+      rotation = m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 0.0f);
       break;
   }
 

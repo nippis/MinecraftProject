@@ -24,6 +24,22 @@ DirectX::XMMATRIX Player::GetMovement()
   return m_movement->GetMovement();
 }
 
+DirectX::XMVECTOR Player::GetForward()
+{
+  return XMVectorSet(XMVectorGetX(m_movement->GetRotation()), XMVectorGetY(m_movement->GetRotation()), 0.0f, 0.0f);
+}
+
+DirectX::XMVECTOR Player::GetLeft()
+{
+  XMVECTOR camLeft = XMVector3Cross(m_movement->GetUp(), m_movement->GetRotation());
+  return -XMVectorSet(XMVectorGetX(camLeft), XMVectorGetY(camLeft), 0.0f, 0.0f);
+}
+
+DirectX::XMVECTOR Player::GetUp()
+{
+  return m_movement->GetUp();
+}
+
 bool Player::IsDropping()
 {
   return m_dropping;

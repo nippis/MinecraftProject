@@ -3,7 +3,7 @@
 using namespace DirectX;
 
 Entity::Entity(XMVECTOR location, float height, float width, float depth) :
-  m_movement(std::make_shared<Movement>(location, XMVectorZero())),
+  m_movement(std::make_shared<Movement>(location)),
   m_bBox(std::make_shared<BoundingBox>(location, height, width, depth)),
   m_height(height), m_width(width), m_depth(depth)
 {

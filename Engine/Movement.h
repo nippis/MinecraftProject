@@ -8,7 +8,7 @@ class Movement
 {
 public:
   Movement();
-  Movement(XMVECTOR location, XMVECTOR rotation);
+  Movement(XMVECTOR location);
   ~Movement();
 
   void AddLocation(XMVECTOR locationAdd);
@@ -20,9 +20,12 @@ public:
   XMVECTOR GetLocation();
   XMVECTOR GetRotation();
 
+  XMVECTOR GetUp();
+
 
 private:
   XMVECTOR m_location;
   XMVECTOR m_rotation;
+  XMVECTOR m_up;
 };
 

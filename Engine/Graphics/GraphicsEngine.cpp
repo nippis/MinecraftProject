@@ -149,24 +149,9 @@ void GraphicsEngine::RenderFrame(void)
   m_worldMatrix = XMMatrixIdentity();
 
   // Calculate the camera rotation relative to player coordinates
-  DirectX::XMVECTOR camTargetRotY = XMVector4Transform(m_camTargetOrig, XMMatrixRotationZ(XMVectorGetZ(m_player->GetRotation())));
-  DirectX::XMVECTOR camUpRotY = XMVector4Transform(m_camUpOrig, XMMatrixRotationZ(XMVectorGetZ(m_player->GetRotation())));
-  m_camTarget = XMVector4Transform(
-    camTargetRotY,
-    XMMatrixRotationAxis(
-      XMVector3Cross(
-        camTargetRotY,
-        camUpRotY),
-      XMVectorGetY(
-        m_player->GetRotation())));
-  m_camUp = XMVector4Transform(
-    camUpRotY,
-    XMMatrixRotationAxis(
-      XMVector3Cross(
-        camTargetRotY,
-        camUpRotY),
-      XMVectorGetY(
-        m_player->GetRotation())));
+  m_camTarget = m_player->GetRotation();
+  m_camUp = m_player->GetUp();
+
   
   // Calculate player position
   m_camPosition = m_camPositionOrig + m_player->GetLocation() + XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
@@ -207,17 +192,6 @@ void GraphicsEngine::RenderFrame(void)
 void GraphicsEngine::UpdateVertexBuffer(int direction)
 {
 
-}
-
-XMVECTOR GraphicsEngine::GetCamForward()
-{
-  return XMVectorSet(XMVectorGetX(m_camTarget), XMVectorGetY(m_camTarget), 0.0f, 0.0f);
-}
-
-XMVECTOR GraphicsEngine::GetCamLeft()
-{
-  XMVECTOR camLeft = XMVector3Cross(m_camUp, m_camTarget);
-  return -XMVectorSet(XMVectorGetX(camLeft), XMVectorGetY(camLeft), 0.0f, 0.0f);
 }
 
 // -------------------------

@@ -2,12 +2,14 @@
 
 Movement::Movement() : 
   m_location({0.0, 0.0, 0.0, 0.0}),
-  m_rotation({0.0, 0.0, 0.0, 0.0})
+  m_rotation({1.0, 0.0, 0.0, 0.0}),
+  m_up({0.0, 0.0, 1.0, 0.0})
 {
 }
 
-Movement::Movement(XMVECTOR location, XMVECTOR rotation) :
-  m_location(location), m_rotation(rotation)
+Movement::Movement(XMVECTOR location) :
+  m_location(location), m_rotation({ 1.0, 0.0, 0.0, 0.0 }),
+  m_up({ 0.0, 0.0, 1.0, 0.0 })
 {
 }
 
@@ -22,7 +24,8 @@ void Movement::AddLocation(XMVECTOR locationAdd)
 
 void Movement::AddRotation(XMVECTOR rotationAdd)
 {
-  m_rotation += rotationAdd;
+  m_rotation = XMVector4Transform(m_rotation, XMMatrixRotationRollPitchYawFromVector(rotationAdd));
+  m_up = XMVector4Transform(m_up, XMMatrixRotationRollPitchYawFromVector(rotationAdd));
 }
 
 void Movement::SetLocation(XMVECTOR location)
@@ -32,7 +35,6 @@ void Movement::SetLocation(XMVECTOR location)
 
 void Movement::SetRotation(XMVECTOR rotation)
 {
-  m_rotation = rotation;
 }
 
 XMMATRIX Movement::GetMovement()
@@ -52,4 +54,9 @@ XMVECTOR Movement::GetLocation()
 XMVECTOR Movement::GetRotation()
 {
   return m_rotation;
+}
+
+XMVECTOR Movement::GetUp()
+{
+  return m_up;
 }

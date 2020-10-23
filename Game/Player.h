@@ -17,6 +17,10 @@ public:
   DirectX::XMVECTOR GetRotation();
   DirectX::XMMATRIX GetMovement();
 
+  DirectX::XMVECTOR GetForward();
+  DirectX::XMVECTOR GetLeft();
+  DirectX::XMVECTOR GetUp();
+
   bool IsDropping();
 
   void Move(XMVECTOR movement, double deltaTime);
