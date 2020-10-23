@@ -18,9 +18,11 @@ int World::CreateTerrain()
   {
     for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
     {
-      if ((x == -WORLD_SIZE/2 ) || (x == WORLD_SIZE/2-1) ||
-          (y == -WORLD_SIZE/2) || (y == WORLD_SIZE/2-1))
-          z = 1;
+      if ((x == -WORLD_SIZE / 2) || (x == WORLD_SIZE / 2 - 1) ||
+          (y == -WORLD_SIZE / 2) || (y == WORLD_SIZE / 2 - 1) ||
+          (x == 0 && y == 0) || (x == 1 && y == 0) ||
+          (x == 0 && y == 1) || (x == 1 && y == 1))
+        z = 1;
       else
           z = 0;
       DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };

@@ -94,10 +94,20 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   D3D11_RASTERIZER_DESC rasterizerDesc;
   ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-  rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+  rasterizerDesc.FillMode = D3D11_FILL_SOLID;
   rasterizerDesc.CullMode = D3D11_CULL_BACK;
   m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
 
+  D3D11_BUFFER_DESC lcbbd;
+  ZeroMemory(&lcbbd, sizeof(D3D11_BUFFER_DESC));
+
+  lcbbd.Usage = D3D11_USAGE_DEFAULT;
+  lcbbd.ByteWidth = sizeof(LightCBuf);
+  lcbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+  lcbbd.CPUAccessFlags = 0;
+  lcbbd.MiscFlags = 0;
+
+  hr = m_device->CreateBuffer(&lcbbd, NULL, &m_LightCBuffer);
 
   // Constant buffer to pixel shader
 
@@ -132,7 +142,7 @@ void GraphicsEngine::InitCamera()
   m_camUp = m_camUpOrig;
 
   //Set the Projection matrix
-  m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 1.0f, 1000.0f);
+  m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 0.1f, 1000.0f);
 
   // -------------------------
 }
@@ -160,13 +170,21 @@ void GraphicsEngine::RenderFrame(void)
   m_WVP = m_worldMatrix * m_camView * m_camProjection;
   
   cbPerObj.WVP = XMMatrixTranspose(m_WVP);
+  cbPerObj.World = XMMatrixTranspose(m_worldMatrix);
 
   m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer.Get(), 0, NULL, &cbPerObj, 0, 0);
 
   m_deviceContext->VSSetConstantBuffers(0, 1, m_cbPerObjectBuffer.GetAddressOf());
+
+  // LIGHT
+  lightCBuffer.LightPos = { 50.0f, 80.0f, 50.0f };
+
+  m_deviceContext->UpdateSubresource(m_LightCBuffer.Get(), 0, NULL, &lightCBuffer, 0, 0);
+
+  m_deviceContext->PSSetConstantBuffers(0, 1, m_LightCBuffer.GetAddressOf());
   // -------
 
-  m_deviceContext->IASetInputLayout(m_inputLayout.Get());
+  m_deviceContext->IASetInputLayout(m_VSinputLayout.Get());
   m_deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
   m_deviceContext->RSSetState(m_rasterizerState.Get());
   m_deviceContext->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
@@ -182,7 +200,7 @@ void GraphicsEngine::RenderFrame(void)
   for (auto vertexBuffer : m_vertexBuffers)
   {
     m_deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetBuffer().GetAddressOf(), &stride, &offset);
-    m_deviceContext->DrawIndexed(36, 0, 0);
+    m_deviceContext->Draw(36, 0);
   }
 
 
@@ -257,8 +275,9 @@ void GraphicsEngine::InitPipeline()
   D3D11_INPUT_ELEMENT_DESC ied[] =
   {
       {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-      {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
   };
 
-  m_device->CreateInputLayout(ied, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &m_inputLayout);
+  m_device->CreateInputLayout(ied, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &m_VSinputLayout);
+  m_device->CreateInputLayout(ied, 2, PS->GetBufferPointer(), PS->GetBufferSize(), &m_PSinputLayout);
 }

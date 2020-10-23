@@ -241,6 +241,7 @@
     <ClCompile Include="Engine\ErrorLogger.cpp" />
     <ClCompile Include="Engine\Graphics\GraphicsEngine.cpp" />
     <ClCompile Include="Engine\Keyboard.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Blocks\Stone.cpp" />
     <ClCompile Include="Engine\StringConverter.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="Engine\Movement.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\Mouse.h" />
+    <ClInclude Include="Light.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />

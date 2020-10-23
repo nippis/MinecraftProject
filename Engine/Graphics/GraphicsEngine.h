@@ -20,6 +20,13 @@ using namespace DirectX;
 struct cbPerObject
 {
   XMMATRIX  WVP;
+  XMMATRIX World;
+};
+
+struct LightCBuf
+{
+  XMFLOAT3 LightPos;
+  float padding;
 };
 
 class GraphicsEngine
@@ -30,9 +37,6 @@ public:
 
   void RenderFrame();
   void UpdateVertexBuffer(int direction);
-
-  XMVECTOR GetCamForward();
-  XMVECTOR GetCamLeft();
 
 private:
   void InitGraphics();
@@ -68,7 +72,8 @@ private:
   Microsoft::WRL::ComPtr<ID3D11Device> m_device;
   Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;
   Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_backbuffer;
-  Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout> m_VSinputLayout;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout> m_PSinputLayout;
   Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;   
   Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;    
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBuffer;
@@ -77,10 +82,12 @@ private:
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
   Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerState;
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_cbPerObjectBuffer;
+  Microsoft::WRL::ComPtr<ID3D11Buffer> m_LightCBuffer;
 
   std::vector<VertexBuffer> m_vertexBuffers;
 
   cbPerObject cbPerObj;
+  LightCBuf lightCBuffer;
 
   std::shared_ptr<Player> m_player;
   std::shared_ptr<World> m_world;

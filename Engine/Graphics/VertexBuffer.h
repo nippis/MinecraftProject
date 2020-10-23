@@ -14,7 +14,7 @@
 struct VERTEX
 {
   FLOAT X, Y, Z;
-  DirectX::XMFLOAT4 Color;
+  DirectX::XMFLOAT3 normal;
 };
 
 class VertexBuffer
