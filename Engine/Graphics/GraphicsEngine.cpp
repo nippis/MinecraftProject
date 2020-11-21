@@ -2,6 +2,7 @@
 
 #include "GraphicsEngine.h"
 #include "Engine/ErrorLogger.h"
+#include "WICTextureLoader.h"
 
 
 #pragma comment (lib, "d3d11.lib")
@@ -11,7 +12,6 @@
 GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<World> world, std::shared_ptr<Player> player) :
   m_width(width), m_height(height), m_player(player), m_world(world)
 {
-
   HRESULT hr;
   //Describe our SwapChain Buffer
   DXGI_MODE_DESC bufferDesc;
@@ -31,15 +31,15 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
   scd.BufferDesc = bufferDesc;
-  scd.SampleDesc.Count = 1;
+  scd.SampleDesc.Count = 4;
   scd.SampleDesc.Quality = 0;
   scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
   scd.BufferCount = 1;
   scd.OutputWindow = hWnd;
   scd.Windowed = true;
-  scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+  scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
-  D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, NULL, NULL, NULL, D3D11_SDK_VERSION, &scd, &m_swapchain, &m_device, NULL, &m_deviceContext);
+  D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_DEBUG, NULL, NULL, D3D11_SDK_VERSION, &scd, &m_swapchain, &m_device, NULL, &m_deviceContext);
 
   // Set the render target
   Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer;
@@ -55,7 +55,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   depthStencilDesc.MipLevels = 1;
   depthStencilDesc.ArraySize = 1;
   depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-  depthStencilDesc.SampleDesc.Count = 1;
+  depthStencilDesc.SampleDesc.Count = 4;
   depthStencilDesc.SampleDesc.Quality = 0;
   depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
   depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -96,6 +96,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
 
   rasterizerDesc.FillMode = D3D11_FILL_SOLID;
   rasterizerDesc.CullMode = D3D11_CULL_BACK;
+  rasterizerDesc.AntialiasedLineEnable = TRUE;
   m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
 
   D3D11_BUFFER_DESC lcbbd;
@@ -108,14 +109,40 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   lcbbd.MiscFlags = 0;
 
   hr = m_device->CreateBuffer(&lcbbd, NULL, &m_LightCBuffer);
+  if (FAILED(hr))
+  {
+    ErrorLogger::Log(hr, L"Ei nyt toiminu tää valobufferin teko");
+  }
+
+  D3D11_SAMPLER_DESC samplerDesc;
+  samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+  samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+  samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+  samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+  samplerDesc.MipLODBias = 0;
+  samplerDesc.MaxAnisotropy = 0;
+  samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+  samplerDesc.MinLOD = 0;
+  samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+  hr = m_device->CreateSamplerState(&samplerDesc, &m_texSamplerState);
+  if (FAILED(hr))
+  {
+    ErrorLogger::Log(hr, L"Ei nyt toiminu tää samplerstaten teko");
+  }
+
+  hr = DirectX::CreateWICTextureFromFile(m_device.Get(), L"Textures/grass.bmp", NULL, &m_textureView);
+  if (FAILED(hr))
+  {
+    ErrorLogger::Log(hr, L"Ei nyt toiminu tää tekstuurin teko");
+  }
+
 
   // Constant buffer to pixel shader
 
   InitCamera();
   InitPipeline();
   InitGraphics();
-
-
 }
 
 void GraphicsEngine::InitCamera()
@@ -130,10 +157,10 @@ void GraphicsEngine::InitCamera()
   cbbd.CPUAccessFlags = 0;
   cbbd.MiscFlags = 0;
 
-  HRESULT hr = m_device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
+  HRESULT hr = m_device->CreateBuffer(&cbbd, NULL, m_cbPerObjectBuffer.GetAddressOf());
   if (FAILED(hr))
   {
-    ErrorLogger::Log(hr, "Ei nyt toiminu tää kamerabufferin teko");
+    ErrorLogger::Log(hr, L"Ei nyt toiminu tää kamerabufferin teko");
   }
 
   //Set the View matrix
@@ -149,7 +176,7 @@ void GraphicsEngine::InitCamera()
 
 void GraphicsEngine::RenderFrame(void)
 {
-  FLOAT rgba [4] = { 0.0f, 0.2f, 0.4f, 0.0f };
+  FLOAT rgba [4] = { 1.0f, 1.0f, 1.0f, 0.0f };
   m_deviceContext->ClearRenderTargetView(m_backbuffer.Get(), rgba);
 
   //Refresh the Depth/Stencil view
@@ -168,6 +195,8 @@ void GraphicsEngine::RenderFrame(void)
 
   m_camView = XMMatrixLookToLH(m_camPosition, m_camTarget, m_camUp);
   m_WVP = m_worldMatrix * m_camView * m_camProjection;
+
+  cbPerObject cbPerObj;
   
   cbPerObj.WVP = XMMatrixTranspose(m_WVP);
   cbPerObj.World = XMMatrixTranspose(m_worldMatrix);
@@ -176,8 +205,16 @@ void GraphicsEngine::RenderFrame(void)
 
   m_deviceContext->VSSetConstantBuffers(0, 1, m_cbPerObjectBuffer.GetAddressOf());
 
+  m_deviceContext->PSSetSamplers(0, 1, m_texSamplerState.GetAddressOf());
+  m_deviceContext->PSSetShaderResources(0, 1, m_textureView.GetAddressOf());
+
+  LightCBuf lightCBuffer;
+  ZeroMemory(&lightCBuffer, sizeof(LightCBuf));
+
   // LIGHT
-  lightCBuffer.LightPos = { 50.0f, 80.0f, 50.0f };
+  lightCBuffer.LightPos = { 40.0f, 80.0f, 20.0f };
+  lightCBuffer.CamPos = { 0.0f, 0.0f, 0.0f };
+  XMStoreFloat3(&lightCBuffer.CamPos, m_player->GetLocation());
 
   m_deviceContext->UpdateSubresource(m_LightCBuffer.Get(), 0, NULL, &lightCBuffer, 0, 0);
 
@@ -204,7 +241,11 @@ void GraphicsEngine::RenderFrame(void)
   }
 
 
-  m_swapchain->Present(0, 0);
+  HRESULT hr = m_swapchain->Present(0, 0);
+  if (FAILED(hr))
+  {
+    ErrorLogger::Log(hr, L"Ei nyt toiminu tää present");
+  }
 }
 
 void GraphicsEngine::UpdateVertexBuffer(int direction)
@@ -276,8 +317,9 @@ void GraphicsEngine::InitPipeline()
   {
       {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
       {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
   };
 
-  m_device->CreateInputLayout(ied, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &m_VSinputLayout);
-  m_device->CreateInputLayout(ied, 2, PS->GetBufferPointer(), PS->GetBufferSize(), &m_PSinputLayout);
+  m_device->CreateInputLayout(ied, 3, VS->GetBufferPointer(), VS->GetBufferSize(), &m_VSinputLayout);
+  m_device->CreateInputLayout(ied, 3, PS->GetBufferPointer(), PS->GetBufferSize(), &m_PSinputLayout);
 }

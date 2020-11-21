@@ -16,7 +16,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   wc.lpfnWndProc = MessageProcessor;
   wc.hInstance = hInstance;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  // wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+  wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
   wc.lpszClassName = L"WindowClass1";
 
   RegisterClassEx(&wc);

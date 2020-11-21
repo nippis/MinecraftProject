@@ -1,6 +1,7 @@
 #include <DirectXMath.h>
 
 #include "VertexBuffer.h"
+#include "Engine\ErrorLogger.h"
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -25,22 +26,22 @@ HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, Di
   {
      { 0.0f,  0.0f, -1.0f },
      { 0.0f,  0.0f,  1.0f },
-     { 0.0f, -1.0f,  0.0f },
      { 0.0f,  1.0f,  0.0f },
+     { 0.0f, -1.0f,  0.0f },
      {-1.0f,  0.0f,  0.0f },
      { 1.0f,  0.0f,  0.0f }
   };
 
   std::vector<VERTEX> vertices =
   {
-      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)}
+      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f)},
+      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f)},
+      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)},
+      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f)},
+      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)},
+      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(1.0f, 1.0f)},
+      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 1.0f)},
+      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f)}
   };
 
   std::vector<DWORD> indices = {
@@ -79,6 +80,10 @@ HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, Di
   vinitData.pSysMem = allVertices.data();
 
   HRESULT hr = device->CreateBuffer(&bd, &vinitData, &m_vertexBuffer);
+  if (FAILED(hr))
+  {
+    ErrorLogger::Log(hr, L"Ei nyt toiminu t‰‰ vertexbufferin teko");
+  }
 
   return hr;
 }

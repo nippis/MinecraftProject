@@ -27,6 +27,8 @@ struct LightCBuf
 {
   XMFLOAT3 LightPos;
   float padding;
+  XMFLOAT3 CamPos;
+  float padding2;
 };
 
 class GraphicsEngine
@@ -84,10 +86,11 @@ private:
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_cbPerObjectBuffer;
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_LightCBuffer;
 
-  std::vector<VertexBuffer> m_vertexBuffers;
+  Microsoft::WRL::ComPtr <ID3D11Resource> m_texture;
+  Microsoft::WRL::ComPtr <ID3D11ShaderResourceView> m_textureView;
+  Microsoft::WRL::ComPtr <ID3D11SamplerState> m_texSamplerState;
 
-  cbPerObject cbPerObj;
-  LightCBuf lightCBuffer;
+  std::vector<VertexBuffer> m_vertexBuffers;
 
   std::shared_ptr<Player> m_player;
   std::shared_ptr<World> m_world;
