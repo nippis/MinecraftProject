@@ -15,6 +15,8 @@ public:
   ~World() = default;
 
   std::vector<std::shared_ptr<Block>> GetBlocks();
+  std::shared_ptr<Block> GetBlock(int x, int y, int z);
+  void BreakBlock(std::shared_ptr<Block> block);
 
 private:
   int CreateTerrain();

@@ -5,3 +5,4 @@ Release/*
 *.user
 *.filters
 x64/*
+CppProperties.json

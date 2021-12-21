@@ -11,6 +11,24 @@ std::vector<std::shared_ptr<Block>> World::GetBlocks()
   return m_blocks;
 }
 
+std::shared_ptr<Block> World::GetBlock(int x, int y, int z)
+{
+    uint32_t CR = 0;
+    XMVECTOR floatCoords = { static_cast<float>(x), static_cast<float>(y) ,static_cast<float>(z), 0.0 };
+    for (auto block : m_blocks)
+    {
+        XMVectorEqualR(&CR, block->GetLocation(), floatCoords);
+        if (XMComparisonAllTrue(CR))
+            return block;
+    }
+    return std::shared_ptr<Block>();
+}
+
+void World::BreakBlock(std::shared_ptr<Block> block)
+{
+    m_blocks.erase(std::find(m_blocks.begin(), m_blocks.end(), block));
+}
+
 int World::CreateTerrain()
 {
   int z = 0;
