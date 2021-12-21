@@ -155,6 +155,7 @@ void Controller::MovePlayer(double dt)
       break;
   }
 
+  // Törmäystarkastelu seinien ja maan kanssa
   bool onGround = false;
   for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
   {
@@ -166,15 +167,19 @@ void Controller::MovePlayer(double dt)
           onGround = true;
     }
   }
-  if (!onGround)
+  if (!onGround && !m_player->IsDropping())
   {
     m_player->Drop();
   }
-  else
+  else if (m_player->IsDropping())
   {
     m_player->Stop();
   }
+  else
+  {
 
+  }
+  // Tuplahyppyjen estämiseksi tämän voi siirtää tuohon yläpuolelle
   if (m_keyboard->JumpInQueue())
     m_player->Jump();
 
