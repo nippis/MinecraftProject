@@ -1,62 +1,58 @@
 #include "Movement.h"
 
 Movement::Movement() : 
-  m_location({0.0, 0.0, 0.0, 0.0}),
-  m_rotation({1.0, 0.0, 0.0, 0.0}),
-  m_up({0.0, 0.0, 1.0, 0.0})
+  m_location({0.0f, 0.0f, 0.0f}),
+  m_rotation({1.0f, 0.0f, 0.0f, 0.0f})
 {
 }
 
 Movement::Movement(XMVECTOR location) :
-  m_location(location), m_rotation({ 1.0, 0.0, 0.0, 0.0 }),
-  m_up({ 0.0, 0.0, 1.0, 0.0 })
+  m_rotation({ 1.0f, 0.0f, 0.0f, 0.0f})
 {
+  XMStoreFloat3(&m_location, location);
 }
 
 Movement::~Movement()
 {
 }
 
-void Movement::AddLocation(XMVECTOR locationAdd)
+void Movement::AddLocation(const XMVECTOR& locationAdd)
 {
-  m_location += locationAdd;
+  XMStoreFloat3(&m_location, XMLoadFloat3(&m_location) + locationAdd);
 }
 
-void Movement::AddRotation(XMVECTOR rotationAdd)
+void Movement::AddRotation(const XMVECTOR& rotationAdd)
 {
-  m_rotation = XMVector4Transform(m_rotation, XMMatrixRotationRollPitchYawFromVector(rotationAdd));
-  m_up = XMVector4Transform(m_up, XMMatrixRotationRollPitchYawFromVector(rotationAdd));
+  XMVECTOR rotation = XMLoadFloat4(&m_rotation);
+  XMStoreFloat4(&m_rotation, XMQuaternionNormalize(XMQuaternionMultiply(rotationAdd, rotation)));
 }
 
-void Movement::SetLocation(XMVECTOR location)
+void Movement::SetLocation(const XMVECTOR& location)
 {
-  m_location = location;
+  XMStoreFloat3(&m_location, location);
 }
 
-void Movement::SetRotation(XMVECTOR rotation)
+void Movement::SetRotation(const XMVECTOR& rotation)
 {
+  XMStoreFloat4(&m_rotation, rotation);
 }
 
-XMMATRIX Movement::GetMovement()
+XMVECTOR Movement::GetLocationVec()
 {
-  XMMATRIX movement = XMMatrixIdentity();
-  movement *= XMMatrixTranslationFromVector(m_location);
-  movement *= XMMatrixRotationRollPitchYawFromVector(m_rotation);
-
-  return XMMatrixTranslationFromVector(m_location);
+  return XMLoadFloat3(&m_location);
 }
 
-XMVECTOR Movement::GetLocation()
+const XMFLOAT3& Movement::GetLocation()
 {
   return m_location;
 }
 
-XMVECTOR Movement::GetRotation()
+XMVECTOR Movement::GetRotationVec()
 {
-  return m_rotation;
+  return XMLoadFloat4(&m_rotation);
 }
 
-XMVECTOR Movement::GetUp()
+const XMFLOAT4& Movement::GetRotation()
 {
-  return m_up;
+  return m_rotation;
 }

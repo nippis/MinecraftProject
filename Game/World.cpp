@@ -6,7 +6,7 @@ World::World()
   CreateTerrain();
 }
 
-std::vector<std::shared_ptr<Block>> World::GetBlocks()
+std::vector<std::shared_ptr<Block>>& World::GetBlocks()
 {
   return m_blocks;
 }
@@ -39,7 +39,8 @@ int World::CreateTerrain()
       if ((x == -WORLD_SIZE / 2) || (x == WORLD_SIZE / 2 - 1) ||
           (y == -WORLD_SIZE / 2) || (y == WORLD_SIZE / 2 - 1) ||
           (x == 0 && y == 0) || (x == 1 && y == 0) ||
-          (x == 0 && y == 1) || (x == 1 && y == 1))
+          (x == 0 && y == 1) || (x == 1 && y == 1) ||
+          (x == 2 && y == 2))
         z = 1;
       else
           z = 0;

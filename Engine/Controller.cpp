@@ -1,4 +1,6 @@
 #include "Controller.h"
+#include <ranges>
+#include <algorithm>
 
 Controller::Controller(std::shared_ptr<Keyboard> keyboard, 
                        std::shared_ptr<Mouse> mouse, 
@@ -91,72 +93,66 @@ MoveDir Controller::RotationDirection()
   return direction;
 }
 
-void Controller::MovePlayer(double dt)
+XMVECTOR Controller::GetPlayerTranslation()
 {
-  XMVECTOR movement = { 0.0, 0.0, 0.0, 0.0 };
-  XMVECTOR rotation = { 0.0, 0.0, 0.0, 0.0 };
   switch (MovementDirection())
   {
-    case (MoveDir::back):
-      movement = -m_player->GetForward();
-      break;
-    case (MoveDir::right):
-      movement = -m_player->GetLeft();
-      break;
-    case (MoveDir::forw):
-      movement = m_player->GetForward();
-      break;
-    case (MoveDir::left):
-      movement = m_player->GetLeft();
-      break;
-    case (MoveDir::backright):
-      movement = 0.707 * (-m_player->GetForward() - m_player->GetLeft());
-      break;
-    case (MoveDir::forwright):
-      movement = 0.707 * (m_player->GetForward() - m_player->GetLeft());
-      break;
-    case (MoveDir::backleft):
-      movement = 0.707 * (-m_player->GetForward() + m_player->GetLeft());
-      break;
-    case (MoveDir::forwleft):
-      movement = 0.707 * (m_player->GetForward() + m_player->GetLeft());
-      break;
+  case (MoveDir::back):
+    return -m_player->GetForward();
+  case (MoveDir::right):
+    return -m_player->GetLeft();
+  case (MoveDir::forw):
+    return m_player->GetForward();
+  case (MoveDir::left):
+    return m_player->GetLeft();
+  case (MoveDir::backright):
+    return 0.707 * (-m_player->GetForward() - m_player->GetLeft());
+  case (MoveDir::forwright):
+    return 0.707 * (m_player->GetForward() - m_player->GetLeft());
+  case (MoveDir::backleft):
+    return 0.707 * (-m_player->GetForward() + m_player->GetLeft());
+  case (MoveDir::forwleft):
+    return 0.707 * (m_player->GetForward() + m_player->GetLeft());
   }
+  return XMVECTOR();
+}
 
+XMVECTOR Controller::GetPlayerRotation()
+{
   switch (RotationDirection())
   {
-    case (MoveDir::back):
-      if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2-0.07 ||
-          XMVectorGetZ(m_player->GetRotation()) >= 0.0f)
-        rotation = -m_player->GetLeft();
-      break;
-    case (MoveDir::right):
-      rotation = { 0.0f, 0.0f, 1.0f, 0.0f };
-      break;
-    case (MoveDir::forw):
-      if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2-0.07 ||
-          XMVectorGetZ(m_player->GetRotation()) <= 0.0f)
-        rotation = m_player->GetLeft();
-      break;
-    case (MoveDir::left):
-      rotation = { 0.0f, 0.0f, -1.0f, 0.0f };
-      break;
-    case (MoveDir::backright):
-      rotation = -m_player->GetLeft() * 0.707f + XMVectorSet( 0.0f, 0.0f, 0.707f, 0.0f );
-      break;
-    case (MoveDir::forwright):
-      rotation = m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 0.0f);
-      break;
-    case (MoveDir::backleft):
-      rotation = -m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 0.0f);
-      break;
-    case (MoveDir::forwleft):
-      rotation = m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 0.0f);
-      break;
+  case (MoveDir::back):
+    if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2 - 0.07 ||
+      XMVectorGetZ(m_player->GetRotation()) >= 0.0f)
+      return -m_player->GetLeft();
+  case (MoveDir::forw):
+    if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2 - 0.07 ||
+      XMVectorGetZ(m_player->GetRotation()) <= 0.0f)
+      return m_player->GetLeft();
+  case (MoveDir::left):
+    return { 0.0f, 0.0f, -1.0f, 0.0f };
+  case (MoveDir::right):
+    return { 0.0f, 0.0f, 1.0f, 0.0f };
+  case (MoveDir::backright):
+    return -m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
+  case (MoveDir::forwright):
+    return m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
+  case (MoveDir::backleft):
+    return -m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
+  case (MoveDir::forwleft):
+    return m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
   }
+  return XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void Controller::MovePlayer(double dt)
+{
+  XMVECTOR movement = GetPlayerTranslation();
+  XMVECTOR rotation = GetPlayerRotation();
 
   // Törmäystarkastelu seinien ja maan kanssa
   bool onGround = false;
+
   for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
   {
     if (m_collisionDetector->Collide(m_player, block))

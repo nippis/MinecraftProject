@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 #include <memory>
 
 #include "Engine/Movement.h"
@@ -14,12 +15,9 @@ public:
   Player(std::shared_ptr<Timer> timer);
   virtual ~Player();
 
-  DirectX::XMVECTOR GetRotation();
-  DirectX::XMMATRIX GetMovement();
-
-  DirectX::XMVECTOR GetForward();
-  DirectX::XMVECTOR GetLeft();
-  DirectX::XMVECTOR GetUp();
+  XMVECTOR GetForward();
+  XMVECTOR GetLeft();
+  XMVECTOR GetUp();
 
   bool IsDropping();
 

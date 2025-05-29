@@ -1,35 +1,24 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 #include <memory>
 
 #include "Engine/Movement.h"
 
-struct BoundingBox
-{
-  BoundingBox(DirectX::XMVECTOR location, float height, float width, float depth);
-  void Update(DirectX::XMVECTOR movement);
-
-  float Xmin;
-  float Xmax;
-  float Ymin;
-  float Ymax;
-  float Zmin;
-  float Zmax;
-};
-
 class Entity
 {
 public:
-  Entity(DirectX::XMVECTOR location, float height, float width, float depth);
+  Entity(XMVECTOR location, float height, float width, float depth);
   ~Entity();
 
-  DirectX::XMVECTOR GetLocation();
+  XMVECTOR GetLocation();
+  XMVECTOR GetRotation();
 
-  std::shared_ptr<BoundingBox> GetBoundingBox();
+  const BoundingBox& GetBoundingBox();
 
 protected:
-  std::shared_ptr<BoundingBox> m_bBox;
+  BoundingBox m_bBox;
   std::shared_ptr<Movement> m_movement;
 
   float m_height;

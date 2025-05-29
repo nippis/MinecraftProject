@@ -32,6 +32,9 @@ private:
   MoveDir MovementDirection();
   MoveDir RotationDirection();
 
+  XMVECTOR GetPlayerTranslation();
+  XMVECTOR GetPlayerRotation();
+
   std::shared_ptr<Keyboard> m_keyboard;
   std::shared_ptr<Mouse> m_mouse;
   std::shared_ptr<Player> m_player;

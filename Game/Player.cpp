@@ -14,33 +14,22 @@ Player::~Player()
 
 }
 
-DirectX::XMVECTOR Player::GetRotation()
-{
-  return m_movement->GetRotation();
-}
-
-DirectX::XMMATRIX Player::GetMovement()
-{
-  return m_movement->GetMovement();
-}
-
 // --------------------------
 // Returns normalized xy plane forward vector
 // --------------------------
 DirectX::XMVECTOR Player::GetForward()
 {
-  return XMVector4Normalize(XMVectorSet(XMVectorGetX(m_movement->GetRotation()), XMVectorGetY(m_movement->GetRotation()), 0.0f, 0.0f));
+  return XMVector4Normalize(XMVectorSet(XMVectorGetX(m_movement->GetRotationVec()), XMVectorGetY(m_movement->GetRotationVec()), 0.0f, 0.0f));
 }
 
 DirectX::XMVECTOR Player::GetLeft()
 {
-  XMVECTOR camLeft = XMVector3Cross(m_movement->GetUp(), m_movement->GetRotation());
-  return -XMVector4Normalize(XMVectorSet(XMVectorGetX(camLeft), XMVectorGetY(camLeft), 0.0f, 0.0f));
+  return XMVector3Rotate(XMVectorSet(0, 0, 1, 0), m_movement->GetRotationVec());
 }
 
 DirectX::XMVECTOR Player::GetUp()
 {
-  return m_movement->GetUp();
+  return XMVector3Rotate(XMVectorSet(0, 1, 0, 0), m_movement->GetRotationVec());
 }
 
 bool Player::IsDropping()
@@ -51,8 +40,7 @@ bool Player::IsDropping()
 void Player::Move(XMVECTOR movement, double deltaTime)
 {
   m_movement->AddLocation(movement * MOVEMENT_SPEED * deltaTime);
-  m_bBox->Update(movement * MOVEMENT_SPEED * deltaTime);
-
+  m_bBox.Transform(m_bBox, XMMatrixTranslationFromVector(movement * MOVEMENT_SPEED * deltaTime));
 }
 
 void Player::Rotate(XMVECTOR rotation, double deltaTime)
@@ -68,7 +56,7 @@ bool Player::Jump()
     m_dropping = true;
     XMVECTOR direction = { 0.0f, 0.0f, -1.0f, 0.0f };
     m_movement->AddLocation(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
-    m_bBox->Update(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
+    m_bBox.Transform(m_bBox, XMMatrixTranslationFromVector(direction * m_dropSpeed * m_jumpTimer->getDeltaTime()));
     return true;
   }
   else
@@ -81,7 +69,7 @@ void Player::Drop()
   m_dropSpeed += m_jumpTimer->getDeltaTime() * DROP_ACCELERATION;
   XMVECTOR direction = { 0.0f, 0.0f, -1.0f, 0.0f };
   m_movement->AddLocation(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
-  m_bBox->Update(direction * m_dropSpeed * m_jumpTimer->getDeltaTime());
+  m_bBox.Transform(m_bBox, XMMatrixTranslationFromVector(direction * m_dropSpeed * m_jumpTimer->getDeltaTime()));
 }
 
 void Player::Stop()

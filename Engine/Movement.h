@@ -11,21 +11,18 @@ public:
   Movement(XMVECTOR location);
   ~Movement();
 
-  void AddLocation(XMVECTOR locationAdd);
-  void AddRotation(XMVECTOR rotationAdd);
-  void SetLocation(XMVECTOR location);
-  void SetRotation(XMVECTOR rotation);
+  void AddLocation(const XMVECTOR& locationAdd);
+  void AddRotation(const XMVECTOR& rotationAdd);
+  void SetLocation(const XMVECTOR& location);
+  void SetRotation(const XMVECTOR& rotation);
 
-  XMMATRIX GetMovement();
-  XMVECTOR GetLocation();
-  XMVECTOR GetRotation();
-
-  XMVECTOR GetUp();
-
+  XMVECTOR GetLocationVec();
+  const XMFLOAT3& GetLocation();
+  XMVECTOR GetRotationVec();
+  const XMFLOAT4& GetRotation();
 
 private:
-  XMVECTOR m_location;
-  XMVECTOR m_rotation;
-  XMVECTOR m_up;
+  XMFLOAT3 m_location;
+  XMFLOAT4 m_rotation;
 };
 
