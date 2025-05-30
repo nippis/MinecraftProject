@@ -1,13 +1,13 @@
 #include "Game.h"
 
-Game::Game(HWND hWnd, std::shared_ptr<Keyboard> keyboard) :
-  m_timer(std::make_shared<Timer>()),
-  m_keyboard(keyboard),
-  m_world(std::make_shared<World>())
+Game::Game(HWND hWnd)
 {
+  m_world = std::make_shared<World>();
+  m_timer = std::make_shared<Timer>();
   m_player = std::make_shared<Player>(m_timer);
   m_graphics = std::make_shared<GraphicsEngine>(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT, m_world, m_player);
   m_playerController = std::make_shared<Controller>(m_keyboard, nullptr, m_graphics, m_player, m_world);
+  m_keyboard = std::make_shared<Keyboard>();
 }
 
 void Game::run(MSG *msg)

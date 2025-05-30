@@ -2,9 +2,7 @@
 
 LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-static std::shared_ptr<Keyboard> KEYBOARD = std::make_shared<Keyboard>();
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
   WNDCLASSEX wc = { 0 };
   wc.cbSize = sizeof(wc);
@@ -21,7 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   ShowWindow(hWnd, nCmdShow);
 
-  auto game = std::make_shared<Game>(hWnd, KEYBOARD);
+  auto game = Game::Instance(hWnd);
   
   MSG msg;
   game->run(&msg);
@@ -31,6 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+  auto game = Game::Instance();
   switch (message)
   {
     case WM_DESTROY:
@@ -40,11 +39,11 @@ LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     } break;
     case WM_KEYDOWN:
     {
-      KEYBOARD->SetState(message, wParam);
+      game->getKeyboard()->SetState(message, wParam);
     } break;
     case WM_KEYUP:
     {
-      KEYBOARD->SetState(message, wParam);
+      game->getKeyboard()->SetState(message, wParam);
     } break;
     case WM_MOUSEMOVE:
     {
