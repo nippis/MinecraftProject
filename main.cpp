@@ -1,6 +1,7 @@
 #include "Game.h"
 
 LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+static Game* game;
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -19,7 +20,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   ShowWindow(hWnd, nCmdShow);
   
-  Game::Instance(hWnd).run();
+  game = new Game(hWnd);
+  game->run();
 
   return 0;
 }
@@ -35,11 +37,11 @@ LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     } break;
     case WM_KEYDOWN:
     {
-      Game::Instance().getKeyboard()->SetState(message, wParam);
+     game->getKeyboard()->SetState(message, wParam);
     } break;
     case WM_KEYUP:
     {
-      Game::Instance().getKeyboard()->SetState(message, wParam);
+      game->getKeyboard()->SetState(message, wParam);
     } break;
     case WM_MOUSEMOVE:
     {

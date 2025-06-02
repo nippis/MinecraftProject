@@ -9,7 +9,7 @@
 #include <wrl.h>
 
 #include "VertexBuffer.h"
-#include "./Game/Player.h"
+#include "./Engine/Player.h"
 #include "Game/World.h"
 
 #define SCREEN_WIDTH 1000
@@ -46,25 +46,24 @@ private:
   int m_width;
   int m_height;
 
-  XMMATRIX m_cube1World;
+  XMFLOAT4X4 m_cube1World;
 
-  XMMATRIX m_WVP;
-  XMMATRIX m_worldMatrix;
-  XMMATRIX m_camView;
-  XMMATRIX m_playerView;
-  XMMATRIX m_camProjection;
+  XMFLOAT4X4 m_WVP;
+  XMFLOAT4X4 m_camView;
+  XMFLOAT4X4 m_playerView;
+  XMFLOAT4X4 m_camProjection;
 
-  const XMVECTOR m_camPositionOrig = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-  const XMVECTOR m_camTargetOrig =   XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-  const XMVECTOR m_camUpOrig =       XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+  const XMFLOAT3 m_camPositionOrig{0.0f, 0.0f, 0.0f};
+  const XMFLOAT3 m_camTargetOrig{0.0f, 0.0f, -1.0f};
+  const XMFLOAT3 m_camUpOrig{0.0f, 1.0f, 0.0f};
 
-  XMVECTOR m_camPosition;
-  XMVECTOR m_camTarget;
-  XMVECTOR m_camUp;
+  XMFLOAT3 m_camPosition;
+  XMFLOAT3 m_camTarget;
+  XMFLOAT3 m_camUp;
 
-  XMMATRIX Rotation;
-  XMMATRIX Scale;
-  XMMATRIX Translation;
+  XMFLOAT4X4 Rotation;
+  XMFLOAT4X4 Scale;
+  XMFLOAT4X4 Translation;
 
   float m_rot = 0.00f;
 

@@ -24,37 +24,41 @@ HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, Di
   std::vector<DirectX::XMFLOAT3> normals =
   {
      { 0.0f,  0.0f, -1.0f },
-     { 0.0f,  0.0f,  1.0f },
-     { 0.0f, -1.0f,  0.0f },
+     { 1.0f,  0.0f,  0.0f },
      { 0.0f,  1.0f,  0.0f },
      {-1.0f,  0.0f,  0.0f },
-     { 1.0f,  0.0f,  0.0f }
+     { 0.0f, -1.0f,  0.0f },
+     { 0.0f,  0.0f,  1.0f }
   };
+
+  float x = XMVectorGetX(blockCoord);
+  float y = XMVectorGetY(blockCoord);
+  float z = XMVectorGetZ(blockCoord);
 
   std::vector<VERTEX> vertices =
   {
-      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 0.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord),  0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + XMVectorGetX(blockCoord), -0.5f + XMVectorGetY(blockCoord), 1.0f + XMVectorGetZ(blockCoord), XMFLOAT3(0.0f, 0.0f, 0.0f)}
+      {-0.5f + x, 0.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
+      {-0.5f + x, 1.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
+      { 0.5f + x, 1.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
+      { 0.5f + x, 0.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
+      {-0.5f + x, 0.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
+      {-0.5f + x, 1.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
+      { 0.5f + x, 1.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
+      { 0.5f + x, 0.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)}
   };
 
   std::vector<DWORD> indices = {
-      0, 1, 2,
+      0, 1, 2, // Left
       0, 2, 3,
-      3, 2, 6,
+      3, 2, 6, // Back
       3, 6, 7,
-      1, 5, 2,
+      1, 5, 2, // Top
       2, 5, 6,
-      0, 4, 5,
+      0, 4, 5, // Front
       5, 1, 0,
-      0, 3, 4,
+      0, 3, 4, // Bottom
       3, 7, 4,
-      7, 6, 5,
+      7, 6, 5, // Right
       7, 5, 4
   };
 

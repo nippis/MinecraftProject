@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "Engine/Graphics/GraphicsEngine.h"
-#include "Game/Player.h"
+#include "Engine/Player.h"
 #include "Engine/Keyboard.h"
 #include "Engine/Timer.h"
 #include "Engine/CollisionDetector.h"
@@ -11,19 +11,7 @@
 class Game
 {
 public:
-  // Singleton accessor
-  static Game& Instance(HWND hWnd = nullptr)
-  {
-    static Game instance(hWnd);
-    return instance;
-  }
-
-  // Delete copy/move constructors and assignment operators
-  Game(const Game&) = delete;
-  Game& operator=(const Game&) = delete;
-  Game(Game&&) = delete;
-  Game& operator=(Game&&) = delete;
-
+  Game(HWND hWnd);
   std::shared_ptr<Keyboard> getKeyboard() const { return m_keyboard; }
 
   virtual ~Game() = default;
@@ -31,8 +19,6 @@ public:
   void run();
 
 private:
-  Game(HWND hWnd);
-
   void calculateFrameStatistics();	// computes fps and spf
 
   std::shared_ptr<World> m_world;

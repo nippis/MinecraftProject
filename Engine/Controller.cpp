@@ -98,21 +98,21 @@ XMVECTOR Controller::GetPlayerTranslation()
   switch (MovementDirection())
   {
   case (MoveDir::back):
-    return -m_player->GetForward();
+    return -m_player->GetForwardXZ();
   case (MoveDir::right):
-    return -m_player->GetLeft();
+    return m_player->GetRightXZ();
   case (MoveDir::forw):
-    return m_player->GetForward();
+    return m_player->GetForwardXZ();
   case (MoveDir::left):
-    return m_player->GetLeft();
+    return -m_player->GetRightXZ();
   case (MoveDir::backright):
-    return 0.707 * (-m_player->GetForward() - m_player->GetLeft());
+    return 0.707 * (-m_player->GetForwardXZ() + m_player->GetRightXZ());
   case (MoveDir::forwright):
-    return 0.707 * (m_player->GetForward() - m_player->GetLeft());
+    return 0.707 * (m_player->GetForwardXZ() + m_player->GetRightXZ());
   case (MoveDir::backleft):
-    return 0.707 * (-m_player->GetForward() + m_player->GetLeft());
+    return 0.707 * (-m_player->GetForwardXZ() - m_player->GetRightXZ());
   case (MoveDir::forwleft):
-    return 0.707 * (m_player->GetForward() + m_player->GetLeft());
+    return 0.707 * (m_player->GetForwardXZ() - m_player->GetRightXZ());
   }
   return XMVECTOR();
 }
@@ -122,25 +122,25 @@ XMVECTOR Controller::GetPlayerRotation()
   switch (RotationDirection())
   {
   case (MoveDir::back):
-    if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2 - 0.07 ||
-      XMVectorGetZ(m_player->GetRotation()) >= 0.0f)
-      return -m_player->GetLeft();
+    if (XMVectorGetX(XMVector3AngleBetweenNormals(m_player->GetDirection(), m_player->GetForwardXZ())) < XM_PIDIV2 - 0.07)
+      return m_player->GetRightXZ();
+    break;
   case (MoveDir::forw):
-    if (XMVectorGetX(XMVector4AngleBetweenNormals(m_player->GetRotation(), m_player->GetForward())) < XM_PIDIV2 - 0.07 ||
-      XMVectorGetZ(m_player->GetRotation()) <= 0.0f)
-      return m_player->GetLeft();
+    if (XMVectorGetX(XMVector3AngleBetweenNormals(m_player->GetDirection(), m_player->GetForwardXZ())) < XM_PIDIV2 - 0.07)
+      return -m_player->GetRightXZ();
+    break;
   case (MoveDir::left):
-    return { 0.0f, 0.0f, -1.0f, 0.0f };
+    return { 0.0f, 1.0f, 0.0f, 0.0f };
   case (MoveDir::right):
-    return { 0.0f, 0.0f, 1.0f, 0.0f };
+    return { 0.0f, -1.0f, 0.0f, 0.0f };
   case (MoveDir::backright):
-    return -m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
+    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
   case (MoveDir::forwright):
-    return m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
+    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
   case (MoveDir::backleft):
-    return -m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
+    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
   case (MoveDir::forwleft):
-    return m_player->GetLeft() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
+    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
   }
   return XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 }
@@ -151,9 +151,9 @@ void Controller::MovePlayer(double dt)
   XMVECTOR rotation = GetPlayerRotation();
 
   // Törmäystarkastelu seinien ja maan kanssa
-  bool onGround = false;
+  bool onGround = true;
 
-  for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
+  /*for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
   {
     XMVECTOR collidingNormal = m_collisionDetector->GetCollidingNormal(m_player, block);
     if (XMVector4Equal(collidingNormal,XMVectorZero()))
@@ -177,7 +177,7 @@ void Controller::MovePlayer(double dt)
   // Tuplahyppyjen estämiseksi tämän voi siirtää tuohon yläpuolelle
   if (m_keyboard->JumpInQueue())
     m_player->Jump();
-
+  */
   m_player->Move(movement, dt);
   m_player->Rotate(rotation, dt);
 }

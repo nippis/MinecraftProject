@@ -4,9 +4,9 @@
 #include <DirectXCollision.h>
 #include <memory>
 
-#include "Engine/Movement.h"
+#include "Engine/Transform.h"
 #include "Engine/Timer.h"
-#include "Game/Entity.h"
+#include "Engine/Entity.h"
 
 class Player :
   public Entity
@@ -14,10 +14,6 @@ class Player :
 public:
   Player(std::shared_ptr<Timer> timer);
   virtual ~Player();
-
-  XMVECTOR GetForward();
-  XMVECTOR GetLeft();
-  XMVECTOR GetUp();
 
   bool IsDropping();
 

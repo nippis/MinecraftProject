@@ -246,7 +246,7 @@
   <ItemGroup>
     <ClCompile Include="Engine\Controller.cpp" />
     <ClCompile Include="Engine\CollisionDetector.cpp" />
-    <ClCompile Include="Game\Entity.cpp" />
+    <ClCompile Include="Engine\Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\Blocks\Block.cpp" />
     <ClCompile Include="Game\Blocks\Dirt.cpp" />
@@ -259,8 +259,8 @@
     <ClCompile Include="Engine\StringConverter.cpp" />
     <ClCompile Include="Engine\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="Game\World.cpp" />
-    <ClCompile Include="Game\Player.cpp" />
-    <ClCompile Include="Engine\Movement.cpp" />
+    <ClCompile Include="Engine\Player.cpp" />
+    <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Engine\Mouse.cpp" />
   </ItemGroup>
@@ -283,9 +283,10 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Constants.h" />
     <ClInclude Include="Engine\Controller.h" />
     <ClInclude Include="Engine\CollisionDetector.h" />
-    <ClInclude Include="Game\Entity.h" />
+    <ClInclude Include="Engine\Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Blocks\Block.h" />
     <ClInclude Include="Game\Blocks\Dirt.h" />
@@ -295,9 +296,9 @@
     <ClInclude Include="Engine\StringConverter.h" />
     <ClInclude Include="Engine\Graphics\VertexBuffer.h" />
     <ClInclude Include="Game\World.h" />
-    <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Engine\Player.h" />
     <ClInclude Include="Engine\Keyboard.h" />
-    <ClInclude Include="Engine\Movement.h" />
+    <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\Mouse.h" />
     <ClInclude Include="Light.h" />

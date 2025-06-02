@@ -142,7 +142,7 @@ void GraphicsEngine::InitCamera()
   m_camUp = m_camUpOrig;
 
   //Set the Projection matrix
-  m_camProjection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)m_width / m_height, 0.1f, 1000.0f);
+  XMStoreFloat4x4(&m_camProjection, XMMatrixPerspectiveFovRH(0.4f * 3.14f, (float)m_width / m_height, 0.1f, 1000.0f));
 
   // -------------------------
 }
@@ -156,21 +156,20 @@ void GraphicsEngine::RenderFrame(void)
   m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
   //Set the World/View/Projection matrix, then send it to constant buffer in effect file
-  m_worldMatrix = XMMatrixIdentity();
+  auto worldMatrix = XMMatrixIdentity();
 
   // Calculate the camera rotation relative to player coordinates
-  m_camTarget = m_player->GetRotation();
-  m_camUp = m_player->GetUp();
+  XMStoreFloat3(&m_camTarget, m_player->GetDirection());
+  XMStoreFloat3(&m_camUp, m_player->GetUp());
 
   
   // Calculate player position
-  m_camPosition = m_player->GetLocation() + XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-  m_camView = XMMatrixLookToLH(m_camPosition, m_camTarget, m_camUp);
-  m_WVP = m_worldMatrix * m_camView * m_camProjection;
+  XMStoreFloat3(&m_camPosition, m_player->GetLocation() + XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+  XMStoreFloat4x4(&m_camView, XMMatrixLookToRH(XMLoadFloat3(&m_camPosition), XMLoadFloat3(&m_camTarget), XMLoadFloat3(&m_camUp)));
+  XMStoreFloat4x4(&m_WVP, worldMatrix * XMLoadFloat4x4(&m_camView) * XMLoadFloat4x4(&m_camProjection));
   
-  cbPerObj.WVP = XMMatrixTranspose(m_WVP);
-  cbPerObj.World = XMMatrixTranspose(m_worldMatrix);
+  cbPerObj.WVP = XMMatrixTranspose(XMLoadFloat4x4(&m_WVP));
+  cbPerObj.World = XMMatrixTranspose(worldMatrix);
 
   m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer.Get(), 0, NULL, &cbPerObj, 0, 0);
 
@@ -249,7 +248,7 @@ void GraphicsEngine::InitGraphics()
   m_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
   // TRIANGLE 1
-  for (auto block : m_world->GetBlocks())
+  for (auto& block : m_world->GetBlocks())
   {
     m_vertexBuffers.push_back(VertexBuffer(m_device, block->GetLocation(), block->GetColor()));
   }

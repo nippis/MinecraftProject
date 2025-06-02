@@ -12,31 +12,24 @@ Game::Game(HWND hWnd)
 
 void Game::run()
 {
-  // reset (start) the timer
   m_timer->reset();
-  MSG* msg = nullptr;
+  MSG msg;
 
   while (true)
   {
 
-    if (PeekMessage(msg, NULL, 0, 0, PM_REMOVE))
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
-      TranslateMessage(msg);
-      DispatchMessage(msg);
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
 
-      if ((*msg).message == WM_QUIT)
+      if ((msg).message == WM_QUIT)
         break;
     }
 
     m_timer->tick();
-
-    // compute fps
     calculateFrameStatistics();
-
-    // now update the game logic based on the input and the elapsed time since the last frame
     m_playerController->MovePlayer(m_timer->getDeltaTime());
-
-    // generate output
     m_graphics->RenderFrame();
   }
 }

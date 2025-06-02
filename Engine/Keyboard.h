@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <unordered_map>
+#include <bitset>
 
 #define KEY_LEFT    0x41 // A
 #define KEY_FORW    0x57 // W
@@ -26,7 +26,7 @@ public:
   bool JumpInQueue();
 
 private:
-  std::unordered_map<WPARAM, bool> m_keyStates;
+  std::bitset<0xFF> m_keyStates;
   bool m_jumpInQueue;
 };
 

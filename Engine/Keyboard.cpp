@@ -8,27 +8,19 @@ void Keyboard::SetState(UINT message, WPARAM keycode)
 {
   if (message == WM_KEYDOWN)
   {
-    if (m_keyStates.find(keycode) == m_keyStates.end())
-      m_keyStates.insert({ keycode, true });
-    else
-      m_keyStates.at(keycode) = true;
+    m_keyStates.set(keycode);
     if (keycode == KEY_JUMP)
       m_jumpInQueue = true;
   }
   else if (message == WM_KEYUP)
   {
-    if (m_keyStates.find(keycode) == m_keyStates.end())
-      m_keyStates.insert({ keycode, false });
-    else
-      m_keyStates.at(keycode) = false;
+    m_keyStates.reset(keycode);
   }
 }
 
 bool Keyboard::IsPressed(WPARAM keycode)
 {
-  if (m_keyStates.find(keycode) == m_keyStates.end())
-    return false;
-  return m_keyStates.at(keycode);
+  return m_keyStates.test(keycode);
 }
 
 bool Keyboard::JumpInQueue()
@@ -38,8 +30,5 @@ bool Keyboard::JumpInQueue()
     m_jumpInQueue = false;
     return true;
   }
-  else 
-  {
-    return false;
-  }
+  return false;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
-#include "Game/Entity.h"
+#include "Engine/Entity.h"
 
 class Block :
   public Entity
