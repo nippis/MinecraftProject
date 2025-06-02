@@ -22,7 +22,7 @@ public:
   ~Keyboard() = default;
 
   void SetState(UINT message, WPARAM keycode);
-  bool IsPressed(WPARAM keycode);
+  bool IsPressed(WPARAM keycode) const;
   bool JumpInQueue();
 
 private:

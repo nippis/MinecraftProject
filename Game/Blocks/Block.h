@@ -12,7 +12,7 @@ public:
 
   virtual bool Break();
 
-  DirectX::XMFLOAT4 GetColor();
+  DirectX::XMFLOAT4 GetColor() const;
 
 protected:
   DirectX::XMFLOAT4 m_color;

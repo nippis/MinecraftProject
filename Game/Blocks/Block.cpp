@@ -15,7 +15,7 @@ bool Block::Break()
   return true;
 }
 
-DirectX::XMFLOAT4 Block::GetColor()
+DirectX::XMFLOAT4 Block::GetColor() const
 {
   return m_color;
 }

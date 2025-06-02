@@ -18,7 +18,7 @@ void Keyboard::SetState(UINT message, WPARAM keycode)
   }
 }
 
-bool Keyboard::IsPressed(WPARAM keycode)
+bool Keyboard::IsPressed(WPARAM keycode) const
 {
   return m_keyStates.test(keycode);
 }

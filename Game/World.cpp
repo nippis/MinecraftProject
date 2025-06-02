@@ -11,7 +11,7 @@ std::vector<std::shared_ptr<Block>>& World::GetBlocks()
   return m_blocks;
 }
 
-std::shared_ptr<Block> World::GetBlock(int x, int y, int z)
+std::shared_ptr<Block> World::GetBlock(int x, int y, int z) const
 {
     uint32_t CR = 0;
     XMVECTOR floatCoords = { static_cast<float>(x), static_cast<float>(y) ,static_cast<float>(z), 0.0 };

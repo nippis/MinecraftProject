@@ -14,10 +14,6 @@ Transform::Transform(XMVECTOR location) :
   XMStoreFloat3(&m_location, location);
 }
 
-Transform::~Transform()
-{
-}
-
 void Transform::AddLocation(const XMVECTOR& locationAdd)
 {
   XMStoreFloat3(&m_location, XMLoadFloat3(&m_location) + locationAdd);

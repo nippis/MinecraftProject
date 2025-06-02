@@ -111,7 +111,7 @@ double Timer::getDeltaTime() const
 	return deltaTime;
 }
 
-bool Timer::stopped()
+bool Timer::stopped() const
 {
 	return isStopped;
 }

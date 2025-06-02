@@ -11,9 +11,9 @@ class Entity : public Transform
 {
 public:
   Entity(XMVECTOR location, float height, float width, float depth);
-  virtual ~Entity() = 0;
+  virtual ~Entity() = default;
 
-  const BoundingBox& GetBoundingBox();
+  const BoundingBox& GetBoundingBox() const;
 
 protected:
   BoundingBox m_bBox;

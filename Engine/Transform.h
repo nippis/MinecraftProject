@@ -11,19 +11,19 @@ class Transform
 public:
   Transform();
   Transform(XMVECTOR location);
-  ~Transform();
+  virtual ~Transform() = default;
 
-  void AddLocation(const XMVECTOR& locationAdd);
-  void AddRotation(const XMVECTOR& rotationAdd);
-  void SetLocation(const XMVECTOR& location);
-  void SetForward(const XMVECTOR& forward);
-  void SetUp(const XMVECTOR& up);
+  virtual void AddLocation(const XMVECTOR& locationAdd);
+  virtual void AddRotation(const XMVECTOR& rotationAdd);
+  virtual void SetLocation(const XMVECTOR& location);
+  virtual void SetForward(const XMVECTOR& forward);
+  virtual void SetUp(const XMVECTOR& up);
 
-  XMVECTOR GetLocation() const;
-  XMVECTOR GetDirection() const;
-  XMVECTOR GetForwardXZ() const;
-  XMVECTOR GetUp() const;
-  XMVECTOR GetRightXZ() const;
+  virtual XMVECTOR GetLocation() const;
+  virtual XMVECTOR GetDirection() const;
+  virtual XMVECTOR GetForwardXZ() const;
+  virtual XMVECTOR GetUp() const;
+  virtual XMVECTOR GetRightXZ() const;
 
 private:
   XMFLOAT3 m_location;

@@ -14,7 +14,7 @@ Player::~Player()
 
 }
 
-bool Player::IsDropping()
+bool Player::IsDropping() const
 {
   return m_dropping;
 }

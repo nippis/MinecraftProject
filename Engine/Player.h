@@ -15,7 +15,7 @@ public:
   Player(std::shared_ptr<Timer> timer);
   virtual ~Player();
 
-  bool IsDropping();
+  bool IsDropping() const;
 
   void Move(XMVECTOR movement, double deltaTime);
   void Rotate(XMVECTOR rotation, double deltaTime);

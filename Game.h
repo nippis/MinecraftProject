@@ -12,9 +12,9 @@ class Game
 {
 public:
   Game(HWND hWnd);
-  std::shared_ptr<Keyboard> getKeyboard() const { return m_keyboard; }
-
   virtual ~Game() = default;
+
+  std::shared_ptr<Keyboard> getKeyboard() const;
 
   void run();
 

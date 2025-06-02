@@ -10,6 +10,11 @@ Game::Game(HWND hWnd)
   m_playerController = std::make_shared<Controller>(m_keyboard, nullptr, m_graphics, m_player, m_world);
 }
 
+std::shared_ptr<Keyboard> Game::getKeyboard() const
+{
+  return m_keyboard;
+}
+
 void Game::run()
 {
   m_timer->reset();

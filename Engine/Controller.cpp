@@ -17,7 +17,7 @@ Controller::~Controller()
 {
 }
 
-MoveDir Controller::MovementDirection()
+MoveDir Controller::MovementDirection() const
 {
   MoveDir direction = MoveDir::none;
 
@@ -55,7 +55,7 @@ MoveDir Controller::MovementDirection()
   return direction;
 }
 
-MoveDir Controller::RotationDirection()
+MoveDir Controller::RotationDirection() const
 {
   MoveDir direction = MoveDir::none;
 
@@ -93,7 +93,7 @@ MoveDir Controller::RotationDirection()
   return direction;
 }
 
-XMVECTOR Controller::GetPlayerTranslation()
+XMVECTOR Controller::GetPlayerTranslation() const
 {
   switch (MovementDirection())
   {
@@ -117,7 +117,7 @@ XMVECTOR Controller::GetPlayerTranslation()
   return XMVECTOR();
 }
 
-XMVECTOR Controller::GetPlayerRotation()
+XMVECTOR Controller::GetPlayerRotation() const
 {
   switch (RotationDirection())
   {
