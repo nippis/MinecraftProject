@@ -1,7 +1,7 @@
 #include "../Game/Player.h"
 
 Player::Player(std::shared_ptr<Timer> timer) :
-  Entity({0.0f, 0.0f, 3.0f, 0.0f}, 0.2f, 0.2f, 2.0f),
+  Entity({0.0f, 3.0f, 0.0f, 0.0f}, 0.2f, 1.8f, 0.2f),
   m_jumpTimer(timer),
   m_dropSpeed(0.0f),
   m_dropping(false)
@@ -24,12 +24,12 @@ DirectX::XMVECTOR Player::GetForward()
 
 DirectX::XMVECTOR Player::GetLeft()
 {
-  return XMVector3Rotate(XMVectorSet(0, 0, 1, 0), m_movement->GetRotationVec());
+  return XMVector3Rotate(XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f), m_movement->GetRotationVec());
 }
 
 DirectX::XMVECTOR Player::GetUp()
 {
-  return XMVector3Rotate(XMVectorSet(0, 1, 0, 0), m_movement->GetRotationVec());
+  return XMVector3Rotate(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), m_movement->GetRotationVec());
 }
 
 bool Player::IsDropping()

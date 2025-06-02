@@ -155,13 +155,12 @@ void Controller::MovePlayer(double dt)
 
   for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
   {
-    if (m_collisionDetector->Collide(m_player, block))
-    {
-      DirectX::XMVECTOR collidingNormal = m_collisionDetector->GetCollidingNormal(m_player, block);
-      movement = m_collisionDetector->GetUnblockedDirection(movement, collidingNormal);
-      if (XMVector4Equal(collidingNormal, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)))
-          onGround = true;
-    }
+    XMVECTOR collidingNormal = m_collisionDetector->GetCollidingNormal(m_player, block);
+    if (XMVector4Equal(collidingNormal,XMVectorZero()))
+      continue;
+    movement = m_collisionDetector->GetUnblockedDirection(movement, collidingNormal);
+    if (XMVector4Equal(collidingNormal, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)))
+        onGround = true;
   }
   if (!onGround && !m_player->IsDropping())
   {

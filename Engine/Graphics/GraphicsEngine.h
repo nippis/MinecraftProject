@@ -56,7 +56,7 @@ private:
 
   const XMVECTOR m_camPositionOrig = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
   const XMVECTOR m_camTargetOrig =   XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-  const XMVECTOR m_camUpOrig =       XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+  const XMVECTOR m_camUpOrig =       XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
   XMVECTOR m_camPosition;
   XMVECTOR m_camTarget;

@@ -18,18 +18,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   HWND hWnd = CreateWindowEx(NULL, L"WindowClass1", L"MinecraftProject", WS_OVERLAPPEDWINDOW, 300, 300, SCREEN_WIDTH, SCREEN_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
   ShowWindow(hWnd, nCmdShow);
-
-  auto game = Game::Instance(hWnd);
   
-  MSG msg;
-  game->run(&msg);
+  Game::Instance(hWnd).run();
 
   return 0;
 }
 
 LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  auto game = Game::Instance();
   switch (message)
   {
     case WM_DESTROY:
@@ -39,11 +35,11 @@ LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     } break;
     case WM_KEYDOWN:
     {
-      game->getKeyboard()->SetState(message, wParam);
+      Game::Instance().getKeyboard()->SetState(message, wParam);
     } break;
     case WM_KEYUP:
     {
-      game->getKeyboard()->SetState(message, wParam);
+      Game::Instance().getKeyboard()->SetState(message, wParam);
     } break;
     case WM_MOUSEMOVE:
     {

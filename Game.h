@@ -12,11 +12,10 @@ class Game
 {
 public:
   // Singleton accessor
-  static std::shared_ptr<Game> Instance(HWND hWnd = nullptr)
+  static Game& Instance(HWND hWnd = nullptr)
   {
-    if (!m_instance)
-      m_instance = std::make_shared<Game>(hWnd);
-    return m_instance;
+    static Game instance(hWnd);
+    return instance;
   }
 
   // Delete copy/move constructors and assignment operators
@@ -29,16 +28,14 @@ public:
 
   virtual ~Game() = default;
 
-  void run(MSG *msg);
+  void run();
 
 private:
   Game(HWND hWnd);
 
   void calculateFrameStatistics();	// computes fps and spf
 
-  static std::shared_ptr<Game> m_instance;	// singleton instance
   std::shared_ptr<World> m_world;
-
   std::shared_ptr<GraphicsEngine> m_graphics;
   std::shared_ptr<Player> m_player;
   std::shared_ptr<Keyboard> m_keyboard;

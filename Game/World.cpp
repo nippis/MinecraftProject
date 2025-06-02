@@ -31,19 +31,19 @@ void World::BreakBlock(std::shared_ptr<Block> block)
 
 int World::CreateTerrain()
 {
-  int z = 0;
+  int y = 0;
   for (int x = -WORLD_SIZE / 2; x < WORLD_SIZE / 2; x++)
   {
-    for (int y = -WORLD_SIZE / 2; y < WORLD_SIZE / 2; y++)
+    for (int z = -WORLD_SIZE / 2; z < WORLD_SIZE / 2; z++)
     {
       if ((x == -WORLD_SIZE / 2) || (x == WORLD_SIZE / 2 - 1) ||
-          (y == -WORLD_SIZE / 2) || (y == WORLD_SIZE / 2 - 1) ||
-          (x == 0 && y == 0) || (x == 1 && y == 0) ||
-          (x == 0 && y == 1) || (x == 1 && y == 1) ||
-          (x == 2 && y == 2))
-        z = 1;
+          (z == -WORLD_SIZE / 2) || (z == WORLD_SIZE / 2 - 1) ||
+          (x == 0 && z == 0) || (x == 1 && z == 0) ||
+          (x == 0 && z == 1) || (x == 1 && z == 1) ||
+          (x == 2 && z == 2))
+        y = 1;
       else
-          z = 0;
+          y = 0;
       DirectX::XMVECTOR newCoords = { x, y, z, 0.0 };
       std::shared_ptr<Block> newBlock = std::make_shared<Dirt>(newCoords);
       m_blocks.push_back(newBlock);
