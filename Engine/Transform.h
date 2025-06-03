@@ -16,7 +16,7 @@ public:
   virtual void AddLocation(const XMVECTOR& locationAdd);
   virtual void AddRotation(const XMVECTOR& rotationAdd);
   virtual void SetLocation(const XMVECTOR& location);
-  virtual void SetForward(const XMVECTOR& forward);
+  virtual void SetDirection(const XMVECTOR& forward);
   virtual void SetUp(const XMVECTOR& up);
 
   virtual XMVECTOR GetLocation() const;

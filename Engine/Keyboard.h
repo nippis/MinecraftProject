@@ -15,6 +15,9 @@
 
 #define KEY_JUMP    VK_SPACE
 
+#define KEY_MOUSE_CONTROL 'M'
+#define KEY_KEYB_CONTROL 'K'
+
 class Keyboard
 {
 public:

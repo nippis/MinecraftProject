@@ -15,6 +15,8 @@ public:
   virtual ~Game() = default;
 
   std::shared_ptr<Keyboard> getKeyboard() const;
+  std::shared_ptr<World> getWorld() const;
+  std::shared_ptr<Player> getPlayer() const;
 
   void run();
 

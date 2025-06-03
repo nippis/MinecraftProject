@@ -37,15 +37,15 @@ LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     } break;
     case WM_KEYDOWN:
     {
-     game->getKeyboard()->SetState(message, wParam);
+      game->getKeyboard()->SetState(message, wParam);
     } break;
     case WM_KEYUP:
     {
       game->getKeyboard()->SetState(message, wParam);
     } break;
-    case WM_MOUSEMOVE:
+    case WM_LBUTTONDOWN:
     {
-      // Handle mouse movement if necessary
+      game->getPlayer()->Reset();
     } break;
     default:
     {

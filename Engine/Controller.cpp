@@ -8,7 +8,7 @@ Controller::Controller(std::shared_ptr<Keyboard> keyboard,
                        std::shared_ptr<Player> player,
                        std::shared_ptr<World> world) :
   m_keyboard(keyboard), m_mouse(mouse), m_player(player), m_graphics(graphics), m_world(world),
-  m_collisionDetector(std::make_shared<CollisionDetector>())
+  m_collisionDetector(std::make_shared<CollisionDetector>()), m_mouseControl(false)
 {
 
 }
@@ -145,10 +145,33 @@ XMVECTOR Controller::GetPlayerRotation() const
   return XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
+XMVECTOR Controller::GetPlayerRotationFromMouse() const
+{
+  POINT cursorPos;
+  GetCursorPos(&cursorPos);
+  float yaw = XMConvertToRadians(cursorPos.x * 0.1f);
+  float pitch = XMConvertToRadians(cursorPos.y * 0.1f);
+  XMVECTOR rotation = XMVectorSet(0.0f, yaw, pitch, 0.0f);
+  SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2); // Reset cursor position to centerm
+  return rotation;
+}
+
 void Controller::MovePlayer(double dt)
 {
+  if (m_keyboard->IsPressed(KEY_MOUSE_CONTROL))
+  {
+    m_mouseControl = true;
+  }
+  else if (m_keyboard->IsPressed(KEY_KEYB_CONTROL))
+  {
+    m_mouseControl = false;
+  }
   XMVECTOR movement = GetPlayerTranslation();
-  XMVECTOR rotation = GetPlayerRotation();
+  XMVECTOR rotation;
+  if (m_mouseControl)
+    rotation = GetPlayerRotationFromMouse();
+  else
+    rotation = GetPlayerRotation();
 
   // Törmäystarkastelu seinien ja maan kanssa
   bool onGround = true;
