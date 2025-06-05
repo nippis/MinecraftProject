@@ -13,7 +13,6 @@ class Player :
 {
 public:
   Player(std::shared_ptr<Timer> timer);
-  virtual ~Player();
 
   bool IsDropping() const;
 

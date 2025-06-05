@@ -11,7 +11,6 @@ class Transform
 public:
   Transform();
   Transform(XMVECTOR location);
-  virtual ~Transform() = default;
 
   virtual void AddLocation(const XMVECTOR& locationAdd);
   virtual void AddRotation(const XMVECTOR& rotationAdd);

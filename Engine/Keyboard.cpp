@@ -1,8 +1,6 @@
 #include "Keyboard.h"
 
-Keyboard::Keyboard() : m_jumpInQueue(false)
-{
-}
+Keyboard::Keyboard() : m_jumpInQueue(false){}
 
 void Keyboard::SetState(UINT message, WPARAM keycode)
 {

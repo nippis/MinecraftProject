@@ -8,10 +8,8 @@ class Block :
 {
 public:
   Block(DirectX::XMVECTOR location, DirectX::XMFLOAT4 color);
-  virtual ~Block();
 
   virtual bool Break();
-
   DirectX::XMFLOAT4 GetColor() const;
 
 protected:

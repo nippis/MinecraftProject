@@ -9,11 +9,6 @@ Player::Player(std::shared_ptr<Timer> timer) :
   m_jumpTimer->stop();
 }
 
-Player::~Player()
-{
-
-}
-
 bool Player::IsDropping() const
 {
   return m_dropping;
