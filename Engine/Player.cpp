@@ -20,6 +20,18 @@ void Player::Move(XMVECTOR movement, double deltaTime)
   m_bBox.Transform(m_bBox, XMMatrixTranslationFromVector(movement * MOVEMENT_SPEED * deltaTime));
 }
 
+void Player::Reset()
+{
+  m_dropping = false;
+  m_dropSpeed = 0.0f;
+  SetLocation({0.0f, 3.0f, 0.0f, 0.0f});
+  SetDirection({0.0f, 0.0f, -1.0f, 1.0f});
+  SetUp({0.0f, 1.0f, 0.0f, 1.0f});
+  m_bBox = BoundingBox({0.0f, 0.0f, 0.0f}, {m_width / 2, m_depth / 2, m_height / 2});
+}
+
+
+
 void Player::Rotate(XMVECTOR rotation, double deltaTime)
 {
   AddRotation(rotation * ROTATION_SPEED * deltaTime);

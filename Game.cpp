@@ -15,6 +15,16 @@ std::shared_ptr<Keyboard> Game::getKeyboard() const
   return m_keyboard;
 }
 
+std::shared_ptr<World> Game::getWorld() const
+{
+  return m_world;
+}
+
+std::shared_ptr<Player> Game::getPlayer() const
+{
+  return m_player;
+}
+
 void Game::run()
 {
   m_timer->reset();

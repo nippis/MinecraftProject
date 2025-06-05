@@ -17,6 +17,7 @@ public:
   bool IsDropping() const;
 
   void Move(XMVECTOR movement, double deltaTime);
+  void Reset();
   void Rotate(XMVECTOR rotation, double deltaTime);
   bool Jump();
   void Drop();

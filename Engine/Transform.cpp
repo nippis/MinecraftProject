@@ -30,7 +30,7 @@ void Transform::SetLocation(const XMVECTOR& location)
   XMStoreFloat3(&m_location, location);
 }
 
-void Transform::SetForward(const XMVECTOR& forward)
+void Transform::SetDirection(const XMVECTOR& forward)
 {
   XMStoreFloat3(&m_forward, forward);
 }

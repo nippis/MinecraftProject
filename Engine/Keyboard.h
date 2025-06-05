@@ -15,6 +15,9 @@ constexpr unsigned int KEY_PITCH_DOWN = VK_DOWN;
 
 constexpr unsigned int KEY_JUMP = VK_SPACE;
 
+#define KEY_MOUSE_CONTROL 'M'
+#define KEY_KEYB_CONTROL 'K'
+
 class Keyboard
 {
 public:
