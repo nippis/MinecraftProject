@@ -13,8 +13,9 @@ Controller::Controller(std::shared_ptr<Keyboard> keyboard,
 
 }
 
-Controller::~Controller()
+void Controller::SetMouseControl(bool mouseControl)
 {
+  m_mouseControl = mouseControl;
 }
 
 MoveDir Controller::MovementDirection() const
@@ -147,12 +148,8 @@ XMVECTOR Controller::GetPlayerRotation() const
 
 XMVECTOR Controller::GetPlayerRotationFromMouse() const
 {
-  POINT cursorPos;
-  GetCursorPos(&cursorPos);
-  float yaw = XMConvertToRadians(cursorPos.x * 0.1f);
-  float pitch = XMConvertToRadians(cursorPos.y * 0.1f);
-  XMVECTOR rotation = XMVectorSet(0.0f, yaw, pitch, 0.0f);
-  SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2); // Reset cursor position to centerm
+  XMVECTOR rotation = XMVectorZero();
+
   return rotation;
 }
 
@@ -167,11 +164,10 @@ void Controller::MovePlayer(double dt)
     m_mouseControl = false;
   }
   XMVECTOR movement = GetPlayerTranslation();
-  XMVECTOR rotation;
+  XMVECTOR rotation = XMVectorZero();
   if (m_mouseControl)
     rotation = GetPlayerRotationFromMouse();
-  else
-    rotation = GetPlayerRotation();
+  rotation += GetPlayerRotation();
 
   // Törmäystarkastelu seinien ja maan kanssa
   bool onGround = true;

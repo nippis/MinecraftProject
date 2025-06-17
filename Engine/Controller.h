@@ -24,11 +24,11 @@ class Controller
 {
 public:
   Controller(std::shared_ptr<Keyboard> keyboard, std::shared_ptr<Mouse> mouse, std::shared_ptr<GraphicsEngine> graphics, std::shared_ptr<Player> player, std::shared_ptr<World> world);
-  ~Controller();
 
   void MovePlayer(double dt);
 
 private:
+  void SetMouseControl(bool mouseControl);
   MoveDir MovementDirection() const;
   MoveDir RotationDirection() const;
 
