@@ -6,10 +6,6 @@ Block::Block(DirectX::XMVECTOR location, DirectX::XMFLOAT4 color) :
 
 }
 
-Block::~Block()
-{
-}
-
 bool Block::Break()
 {
   return true;
