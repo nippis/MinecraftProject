@@ -7,7 +7,6 @@ class Stone :
 {
 public:
   Stone(DirectX::XMVECTOR location);
-  virtual ~Stone();
 
   bool Break();
 };

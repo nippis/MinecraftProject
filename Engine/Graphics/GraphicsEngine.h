@@ -33,7 +33,6 @@ class GraphicsEngine
 {
 public:
   GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<World> world, std::shared_ptr<Player> player);
-  ~GraphicsEngine() = default;
 
   void RenderFrame();
   void UpdateVertexBuffer(int direction);

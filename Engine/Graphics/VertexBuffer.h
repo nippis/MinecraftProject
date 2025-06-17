@@ -21,7 +21,6 @@ class VertexBuffer
 {
 public:
   VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Device> device, DirectX::XMVECTOR blockCoord, DirectX::XMFLOAT4 color);
-  virtual ~VertexBuffer() = default;
 
   Microsoft::WRL::ComPtr<ID3D11Buffer> GetBuffer();
 

@@ -3,6 +3,5 @@ class Mouse
 {
 public:
   Mouse();
-  ~Mouse() = default;
 };
 

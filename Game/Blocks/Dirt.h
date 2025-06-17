@@ -7,7 +7,6 @@ class Dirt:
 {
 public:
   Dirt(DirectX::XMVECTOR location);
-  virtual ~Dirt();
 
   bool Break();
 

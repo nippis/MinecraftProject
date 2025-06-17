@@ -12,7 +12,6 @@ class Game
 {
 public:
   Game(HWND hWnd);
-  virtual ~Game() = default;
 
   std::shared_ptr<Keyboard> getKeyboard() const;
   std::shared_ptr<World> getWorld() const;
