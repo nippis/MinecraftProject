@@ -27,7 +27,7 @@ void Player::Reset()
   SetLocation({0.0f, 3.0f, 0.0f, 0.0f});
   SetDirection({0.0f, 0.0f, -1.0f, 1.0f});
   SetUp({0.0f, 1.0f, 0.0f, 1.0f});
-  m_bBox = BoundingBox({0.0f, 0.0f, 0.0f}, {m_width / 2, m_depth / 2, m_height / 2});
+  m_bBox = BoundingBox({0.0f, 0.0f, 0.0f}, {width() / 2, depth() / 2, height() / 2});
 }
 
 

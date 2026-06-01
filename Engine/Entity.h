@@ -14,10 +14,11 @@ public:
 
   const BoundingBox& GetBoundingBox() const;
 
+  float height() const { return m_bBox.Extents.x; }
+  float width() const { return m_bBox.Extents.y; }
+  float depth() const { return m_bBox.Extents.z; }
+
 protected:
   BoundingBox m_bBox;
-  float m_height;
-  float m_width;
-  float m_depth;
 };
 

@@ -2,6 +2,11 @@
 #include <ranges>
 #include <algorithm>
 
+namespace
+{
+  constexpr float ONE_PER_SQRT_2 = 0.707f;
+}
+
 Controller::Controller(std::shared_ptr<Keyboard> keyboard, 
                        std::shared_ptr<Mouse> mouse, 
                        std::shared_ptr<GraphicsEngine> graphics, 
@@ -107,13 +112,13 @@ XMVECTOR Controller::GetPlayerTranslation() const
   case (MoveDir::left):
     return -m_player->GetRightXZ();
   case (MoveDir::backright):
-    return 0.707 * (-m_player->GetForwardXZ() + m_player->GetRightXZ());
+    return ONE_PER_SQRT_2 * (-m_player->GetForwardXZ() + m_player->GetRightXZ());
   case (MoveDir::forwright):
-    return 0.707 * (m_player->GetForwardXZ() + m_player->GetRightXZ());
+    return ONE_PER_SQRT_2 * (m_player->GetForwardXZ() + m_player->GetRightXZ());
   case (MoveDir::backleft):
-    return 0.707 * (-m_player->GetForwardXZ() - m_player->GetRightXZ());
+    return ONE_PER_SQRT_2 * (-m_player->GetForwardXZ() - m_player->GetRightXZ());
   case (MoveDir::forwleft):
-    return 0.707 * (m_player->GetForwardXZ() - m_player->GetRightXZ());
+    return ONE_PER_SQRT_2 * (m_player->GetForwardXZ() - m_player->GetRightXZ());
   }
   return XMVECTOR();
 }
@@ -135,20 +140,20 @@ XMVECTOR Controller::GetPlayerRotation() const
   case (MoveDir::right):
     return { 0.0f, -1.0f, 0.0f, 0.0f };
   case (MoveDir::backright):
-    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
+    return m_player->GetRightXZ() * ONE_PER_SQRT_2 + XMVectorSet(0.0f, 0.0f, ONE_PER_SQRT_2, 1.0f);
   case (MoveDir::forwright):
-    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
+    return -m_player->GetRightXZ() * ONE_PER_SQRT_2 + XMVectorSet(0.0f, 0.0f, ONE_PER_SQRT_2, 1.0f);
   case (MoveDir::backleft):
-    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
+    return m_player->GetRightXZ() * ONE_PER_SQRT_2 + XMVectorSet(0.0f, 0.0f, -ONE_PER_SQRT_2, 1.0f);
   case (MoveDir::forwleft):
-    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
+    return -m_player->GetRightXZ() * ONE_PER_SQRT_2 + XMVectorSet(0.0f, 0.0f, -ONE_PER_SQRT_2, 1.0f);
   }
   return XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 XMVECTOR Controller::GetPlayerRotationFromMouse() const
 {
-  XMVECTOR rotation = XMVectorZero();
+  XMVECTOR rotation = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
   return rotation;
 }
@@ -164,39 +169,12 @@ void Controller::MovePlayer(double dt)
     m_mouseControl = false;
   }
   XMVECTOR movement = GetPlayerTranslation();
-  XMVECTOR rotation = XMVectorZero();
+  XMVECTOR mouserotation = XMVectorZero();
   if (m_mouseControl)
-    rotation = GetPlayerRotationFromMouse();
-  rotation += GetPlayerRotation();
+    mouserotation = GetPlayerRotationFromMouse();
+  XMVECTOR rotation = GetPlayerRotation();
 
-  // Törmäystarkastelu seinien ja maan kanssa
-  bool onGround = true;
-
-  /*for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
-  {
-    XMVECTOR collidingNormal = m_collisionDetector->GetCollidingNormal(m_player, block);
-    if (XMVector4Equal(collidingNormal,XMVectorZero()))
-      continue;
-    movement = m_collisionDetector->GetUnblockedDirection(movement, collidingNormal);
-    if (XMVector4Equal(collidingNormal, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)))
-        onGround = true;
-  }
-  if (!onGround && !m_player->IsDropping())
-  {
-    m_player->Drop();
-  }
-  else if (m_player->IsDropping())
-  {
-    m_player->Stop();
-  }
-  else
-  {
-
-  }
-  // Tuplahyppyjen estämiseksi tämän voi siirtää tuohon yläpuolelle
-  if (m_keyboard->JumpInQueue())
-    m_player->Jump();
-  */
   m_player->Move(movement, dt);
   m_player->Rotate(rotation, dt);
+  m_player->AddRotation(mouserotation);
 }

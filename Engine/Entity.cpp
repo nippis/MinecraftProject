@@ -3,9 +3,11 @@
 using namespace DirectX;
 
 Entity::Entity(XMVECTOR location, float height, float width, float depth) :
-  Transform(location), m_height(height), m_width(width), m_depth(depth)
+  Transform(location)
 {
-  m_bBox = BoundingBox({XMVectorGetX(location), XMVectorGetY(location), XMVectorGetZ(location)}, {width / 2, depth / 2, height / 2});
+  XMFLOAT3 locationFloat3{XMVectorGetX(location), XMVectorGetY(location), XMVectorGetZ(location)};
+  XMFLOAT3 extents{width / 2, depth / 2, height / 2};
+  m_bBox = BoundingBox(locationFloat3, extents);
 }
 
 const BoundingBox& Entity::GetBoundingBox() const
