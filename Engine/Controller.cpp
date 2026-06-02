@@ -133,14 +133,14 @@ XMVECTOR Controller::GetPlayerRotation() const
     return { 0.0f, 1.0f, 0.0f, 0.0f };
   case (MoveDir::right):
     return { 0.0f, -1.0f, 0.0f, 0.0f };
-  case (MoveDir::backright):
-    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
   case (MoveDir::forwright):
-    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, 0.707f, 1.0f);
-  case (MoveDir::backleft):
-    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
+    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, -0.707f, 0.0f, 0.0f);
+  case (MoveDir::backright):
+    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, -0.707f, 0.0f, 0.0f);
   case (MoveDir::forwleft):
-    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.0f, -0.707f, 1.0f);
+    return m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.707f, 0.0f, 0.0f);
+  case (MoveDir::backleft):
+    return -m_player->GetRightXZ() * 0.707f + XMVectorSet(0.0f, 0.707f, 0.0f, 0.0f);
   }
   return XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 }
