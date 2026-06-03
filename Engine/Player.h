@@ -4,9 +4,9 @@
 #include <DirectXCollision.h>
 #include <memory>
 
-#include "Engine/Transform.h"
-#include "Engine/Timer.h"
 #include "Engine/Entity.h"
+
+class Timer;
 
 class Player :
   public Entity
@@ -23,10 +23,10 @@ public:
   void Drop();
   void Stop();
 
-  const float MOVEMENT_SPEED = 4.0f; // Movement per second
-  const float ROTATION_SPEED = 3.14f; // Rotation per second 
-  const float JUMP_SPEED = 4.0f; // Jump duration in seconds
-  const float DROP_ACCELERATION = 10.0f; // Dropping acceleration u/s^2
+  static constexpr float MOVEMENT_SPEED = 4.0f; // Movement per second
+  static constexpr float ROTATION_SPEED = 3.14f; // Rotation per second 
+  static constexpr float JUMP_SPEED = 4.0f; // Jump duration in seconds
+  static constexpr float DROP_ACCELERATION = 10.0f; // Dropping acceleration u/s^2
              
 private:     
   std::shared_ptr<Timer> m_jumpTimer;

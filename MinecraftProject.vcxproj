@@ -260,7 +260,6 @@
     <ClCompile Include="Engine\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="Game\World.cpp" />
     <ClCompile Include="Engine\Player.cpp" />
-    <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Engine\Mouse.cpp" />
   </ItemGroup>
@@ -298,7 +297,6 @@
     <ClInclude Include="Game\World.h" />
     <ClInclude Include="Engine\Player.h" />
     <ClInclude Include="Engine\Keyboard.h" />
-    <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\Mouse.h" />
     <ClInclude Include="Light.h" />
