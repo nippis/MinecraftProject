@@ -8,7 +8,7 @@ Controller::Controller(std::shared_ptr<Keyboard> keyboard,
                        std::shared_ptr<Player> player,
                        std::shared_ptr<World> world) :
   m_keyboard(keyboard), m_mouse(mouse), m_player(player), m_graphics(graphics), m_world(world),
-  m_collisionDetector(std::make_shared<CollisionDetector>()), m_mouseControl(false)
+  m_collisionDetector(std::make_shared<CollisionDetector>(world)), m_mouseControl(false)
 {
 
 }
@@ -123,11 +123,11 @@ XMVECTOR Controller::GetPlayerRotation() const
   {
   case (MoveDir::back):
     if (XMVectorGetX(XMVector3AngleBetweenNormals(m_player->GetDirection(), m_player->GetForwardXZ())) < XM_PIDIV2 - 0.07)
-      return m_player->GetRightXZ();
+      return -m_player->GetRightXZ();
     break;
   case (MoveDir::forw):
     if (XMVectorGetX(XMVector3AngleBetweenNormals(m_player->GetDirection(), m_player->GetForwardXZ())) < XM_PIDIV2 - 0.07)
-      return -m_player->GetRightXZ();
+      return m_player->GetRightXZ();
     break;
   case (MoveDir::left):
     return Y_POS;
@@ -145,62 +145,19 @@ XMVECTOR Controller::GetPlayerRotation() const
   return XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-XMVECTOR Controller::GetPlayerRotationFromMouse() const
-{
-  POINT cursorPos;
-  GetCursorPos(&cursorPos);
-  float yaw = XMConvertToRadians(cursorPos.x * 0.1f);
-  float pitch = XMConvertToRadians(cursorPos.y * 0.1f);
-  XMVECTOR rotation = XMVectorSet(0.0f, yaw, pitch, 0.0f);
-  SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2); // Reset cursor position to centerm
-  return rotation;
-}
-
 void Controller::MovePlayer(double dt)
 {
-  if (m_keyboard->IsPressed(KEY_MOUSE_CONTROL))
-  {
-    m_mouseControl = true;
-  }
-  else if (m_keyboard->IsPressed(KEY_KEYB_CONTROL))
-  {
-    m_mouseControl = false;
-  }
-  XMVECTOR movement = GetPlayerTranslation();
-  XMVECTOR rotation;
-  if (m_mouseControl)
-    rotation = GetPlayerRotationFromMouse();
-  else
-    rotation = GetPlayerRotation();
+  XMVECTOR playerLocation = m_player->GetLocation();
+  XMVECTOR movement = GetPlayerTranslation() * Player::MOVEMENT_SPEED * dt;
+  m_player->SetLocation(playerLocation + movement);
+  playerLocation = m_collisionDetector->ResolveX(m_player->GetBoundingBox());
+  m_player->SetLocation(playerLocation);
+  playerLocation = m_collisionDetector->ResolveZ(m_player->GetBoundingBox());
+  m_player->SetLocation(playerLocation);
 
-  // Törmäystarkastelu seinien ja maan kanssa
-  bool onGround = true;
+  XMVECTOR rotation = GetPlayerRotation() * Player::ROTATION_SPEED * dt;
 
-  /*for (std::shared_ptr<Block> block : (m_world->GetBlocks()))
-  {
-    XMVECTOR collidingNormal = m_collisionDetector->GetCollidingNormal(m_player, block);
-    if (XMVector4Equal(collidingNormal,XMVectorZero()))
-      continue;
-    movement = m_collisionDetector->GetUnblockedDirection(movement, collidingNormal);
-    if (XMVector4Equal(collidingNormal, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)))
-        onGround = true;
-  }
-  if (!onGround && !m_player->IsDropping())
-  {
-    m_player->Drop();
-  }
-  else if (m_player->IsDropping())
-  {
-    m_player->Stop();
-  }
-  else
-  {
+  m_player->SetDirection(XMVector3Transform(m_player->GetDirection(), XMMatrixRotationRollPitchYawFromVector(rotation)));
+  m_player->SetUp(XMVector3Transform(m_player->GetUp(), XMMatrixRotationRollPitchYawFromVector(rotation)));
 
-  }
-  // Tuplahyppyjen estämiseksi tämän voi siirtää tuohon yläpuolelle
-  if (m_keyboard->JumpInQueue())
-    m_player->Jump();
-  */
-  m_player->Move(movement, dt);
-  m_player->Rotate(rotation, dt);
 }

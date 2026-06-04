@@ -3,14 +3,19 @@
 #include <memory>
 #include "Engine/Entity.h"
 
+class World;
+
 class CollisionDetector
 {
 public:
-  CollisionDetector();
+  CollisionDetector(std::shared_ptr<World> world);
 
-  XMVECTOR ResolveX(BoundingBox& entity1, BoundingBox& entity2);
-  XMVECTOR ResolveZ(BoundingBox& entity1, BoundingBox& entity2);
+  XMVECTOR ResolveX(BoundingBox entity);
+  XMVECTOR ResolveZ(BoundingBox entity);
 
-  bool Collide(BoundingBox& entity1, BoundingBox& entity2) const;
+  bool Collide(const BoundingBox& entity1, const BoundingBox& entity2) const;
+
+private:
+  std::shared_ptr<World> m_world;
 };
 

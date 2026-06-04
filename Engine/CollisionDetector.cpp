@@ -1,20 +1,21 @@
 #include "CollisionDetector.h"
 
-CollisionDetector::CollisionDetector()
+CollisionDetector::CollisionDetector(std::shared_ptr<World> world) :
+  m_world(world)
 {
 }
 
-XMVECTOR CollisionDetector::ResolveX(BoundingBox& entity1, BoundingBox& entity2)
+XMVECTOR CollisionDetector::ResolveX(BoundingBox entity)
 {
-  return XMVECTOR();
+  return XMLoadFloat3(&entity.Center);
 }
 
-XMVECTOR CollisionDetector::ResolveZ(BoundingBox& entity1, BoundingBox& entity2)
+XMVECTOR CollisionDetector::ResolveZ(BoundingBox entity)
 {
-    return XMVECTOR();
+    return XMLoadFloat3(&entity.Center);
 }
 
-bool CollisionDetector::Collide(BoundingBox& entity1, BoundingBox& entity2) const
+bool CollisionDetector::Collide(const BoundingBox& entity1, const BoundingBox& entity2) const
 {
   return entity1.Intersects(entity2);
 }

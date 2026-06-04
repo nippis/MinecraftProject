@@ -43,10 +43,6 @@ LRESULT CALLBACK MessageProcessor(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     {
       game->getKeyboard()->SetState(message, wParam);
     } break;
-    case WM_LBUTTONDOWN:
-    {
-      game->getPlayer()->Reset();
-    } break;
     default:
     {
       // Handle other messages if necessary

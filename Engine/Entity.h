@@ -13,8 +13,6 @@ public:
 
   const BoundingBox& GetBoundingBox() const;
 
-  virtual void AddLocation(const XMVECTOR& locationAdd);
-  virtual void AddRotation(const XMVECTOR& rotationAdd);
   virtual void SetLocation(const XMVECTOR& location);
   virtual void SetDirection(const XMVECTOR& forward);
   virtual void SetUp(const XMVECTOR& up);
@@ -27,6 +25,7 @@ public:
 
 protected:
   BoundingBox m_bBox;
+  XMFLOAT3 m_location;
   XMFLOAT3 m_forward;
   XMFLOAT3 m_up;
   float m_height;

@@ -34,7 +34,6 @@ private:
 
   XMVECTOR GetPlayerTranslation() const;
   XMVECTOR GetPlayerRotation() const;
-  XMVECTOR GetPlayerRotationFromMouse() const;
 
   std::shared_ptr<Keyboard> m_keyboard;
   std::shared_ptr<Mouse> m_mouse;
