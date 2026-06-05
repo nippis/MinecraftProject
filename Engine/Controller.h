@@ -29,10 +29,14 @@ public:
   void MovePlayer(double dt);
 
 private:
+  [[nodiscard]]
   MoveDir MovementDirection() const;
+  [[nodiscard]]
   MoveDir RotationDirection() const;
 
+  [[nodiscard]]
   XMVECTOR GetPlayerTranslation() const;
+  [[nodiscard]]
   XMVECTOR GetPlayerRotation() const;
 
   std::shared_ptr<Keyboard> m_keyboard;

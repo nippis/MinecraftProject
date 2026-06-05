@@ -10,6 +10,7 @@ public:
   Block(DirectX::XMVECTOR location, DirectX::XMFLOAT4 color);
 
   virtual bool Break();
+  [[nodiscard]]
   DirectX::XMFLOAT4 GetColor() const;
 
 protected:

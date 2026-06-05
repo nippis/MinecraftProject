@@ -5,12 +5,12 @@ CollisionDetector::CollisionDetector(std::shared_ptr<World> world) :
 {
 }
 
-XMVECTOR CollisionDetector::ResolveX(BoundingBox entity)
+XMVECTOR CollisionDetector::ResolveX(BoundingBox entity) const
 {
   return XMLoadFloat3(&entity.Center);
 }
 
-XMVECTOR CollisionDetector::ResolveZ(BoundingBox entity)
+XMVECTOR CollisionDetector::ResolveZ(BoundingBox entity) const
 {
     return XMLoadFloat3(&entity.Center);
 }

@@ -21,7 +21,9 @@ public:
   Keyboard();
 
   void SetState(UINT message, WPARAM keycode);
+  [[nodiscard]]
   bool IsPressed(WPARAM keycode) const;
+  [[nodiscard]]
   bool JumpInQueue();
 
 private:

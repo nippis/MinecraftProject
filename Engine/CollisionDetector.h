@@ -10,9 +10,12 @@ class CollisionDetector
 public:
   CollisionDetector(std::shared_ptr<World> world);
 
-  XMVECTOR ResolveX(BoundingBox entity);
-  XMVECTOR ResolveZ(BoundingBox entity);
+  [[nodiscard]]
+  XMVECTOR ResolveX(BoundingBox entity) const;
+  [[nodiscard]]
+  XMVECTOR ResolveZ(BoundingBox entity) const;
 
+  [[nodiscard]]
   bool Collide(const BoundingBox& entity1, const BoundingBox& entity2) const;
 
 private:

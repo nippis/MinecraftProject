@@ -27,9 +27,12 @@ public:
 	Timer();
 
 	// getters: return time measured in seconds
+	[[nodiscard]]
 	double getTotalTime() const;		// returns the total time the game has been running (minus paused time)
+	[[nodiscard]]
 	double getDeltaTime() const;		// returns the time between two frames
 
+	[[nodiscard]]
 	bool stopped() const;
 
 	// methods

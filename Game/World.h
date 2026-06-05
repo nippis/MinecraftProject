@@ -13,7 +13,9 @@ class World
 public:
   World();
 
+  [[nodiscard]]
   std::vector<std::shared_ptr<Block>>& GetBlocks();
+  [[nodiscard]]
   std::shared_ptr<Block> GetBlock(int x, int y, int z) const;
   void BreakBlock(std::shared_ptr<Block> block);
 
