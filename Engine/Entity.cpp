@@ -2,9 +2,9 @@
 
 using namespace DirectX;
 
-Entity::Entity(XMVECTOR location, float height, float width, float depth) :
+Entity::Entity(XMVECTOR location, float depth, float height, float width) :
   m_height(height), m_width(width), m_depth(depth), m_forward({ 0.0f, 0.0f, -1.0f }),
-  m_up({ 0.0f, 1.0f, 0.0f }), m_bBox({ 0.0f, 0.0f, 0.0f }, { width / 2, depth / 2, height / 2 })
+  m_up({ 0.0f, 1.0f, 0.0f }), m_bBox({ 0.0f, 0.0f, 0.0f }, { depth / 2, height / 2, width / 2 })
 {
   SetLocation(location);
 }

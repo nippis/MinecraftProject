@@ -44,7 +44,6 @@ private:
   std::shared_ptr<Player> m_player;
   std::shared_ptr<GraphicsEngine> m_graphics;
   std::shared_ptr<World> m_world;
-  std::shared_ptr<CollisionDetector> m_collisionDetector;
 
   bool m_mouseControl;
 };

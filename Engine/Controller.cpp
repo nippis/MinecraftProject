@@ -8,7 +8,7 @@ Controller::Controller(std::shared_ptr<Keyboard> keyboard,
                        std::shared_ptr<Player> player,
                        std::shared_ptr<World> world) :
   m_keyboard(keyboard), m_mouse(mouse), m_player(player), m_graphics(graphics), m_world(world),
-  m_collisionDetector(std::make_shared<CollisionDetector>(world)), m_mouseControl(false)
+  m_mouseControl(false)
 {
 
 }
@@ -147,17 +147,36 @@ XMVECTOR Controller::GetPlayerRotation() const
 
 void Controller::MovePlayer(double dt)
 {
-  XMVECTOR playerLocation = m_player->GetLocation();
   XMVECTOR movement = GetPlayerTranslation() * Player::MOVEMENT_SPEED * dt;
-  m_player->SetLocation(playerLocation + movement);
-  playerLocation = m_collisionDetector->ResolveX(m_player->GetBoundingBox());
-  m_player->SetLocation(playerLocation);
-  playerLocation = m_collisionDetector->ResolveZ(m_player->GetBoundingBox());
-  m_player->SetLocation(playerLocation);
+
+  BoundingBox testBox = m_player->GetBoundingBox();
+  testBox.Center.x += XMVectorGetX(movement);
+  float maxOffset = 0.0f;
+  for (auto& block : m_world->GetBlocks())
+  {
+    float offset = CollisionDetector::ResolveX(testBox, block->GetBoundingBox());
+    if (offset > 0.0f && offset > maxOffset)
+    {
+      maxOffset = offset;
+    }
+  }
+  testBox.Center.x += XMVectorGetX(movement) > 0 ? -maxOffset : maxOffset;
+
+  testBox.Center.z += XMVectorGetZ(movement);
+  maxOffset = 0.0f;
+  for (auto& block : m_world->GetBlocks())
+  {
+    float offset = CollisionDetector::ResolveZ(testBox, block->GetBoundingBox());
+    if (offset > 0.0f && offset > maxOffset)
+    {
+      maxOffset = offset;
+    }
+  }
+  testBox.Center.z += XMVectorGetZ(movement) > 0 ? -maxOffset : maxOffset;
+  m_player->SetLocation(XMLoadFloat3(&testBox.Center));
 
   XMVECTOR rotation = GetPlayerRotation() * Player::ROTATION_SPEED * dt;
 
   m_player->SetDirection(XMVector3Transform(m_player->GetDirection(), XMMatrixRotationRollPitchYawFromVector(rotation)));
   m_player->SetUp(XMVector3Transform(m_player->GetUp(), XMMatrixRotationRollPitchYawFromVector(rotation)));
-
 }

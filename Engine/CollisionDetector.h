@@ -1,24 +1,14 @@
 #pragma once
 
 #include <memory>
-#include "Engine/Entity.h"
+#include <DirectXMath.h>
+#include <DirectXCollision.h>
 
-class World;
-
-class CollisionDetector
+struct CollisionDetector
 {
-public:
-  CollisionDetector(std::shared_ptr<World> world);
-
   [[nodiscard]]
-  XMVECTOR ResolveX(BoundingBox entity) const;
+  static float ResolveX(DirectX::BoundingBox bb1, const DirectX::BoundingBox& bb2);
   [[nodiscard]]
-  XMVECTOR ResolveZ(BoundingBox entity) const;
-
-  [[nodiscard]]
-  bool Collide(const BoundingBox& entity1, const BoundingBox& entity2) const;
-
-private:
-  std::shared_ptr<World> m_world;
+  static float ResolveZ(DirectX::BoundingBox bb1, const DirectX::BoundingBox& bb2);
 };
 
