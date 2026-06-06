@@ -173,7 +173,28 @@ void Controller::MovePlayer(double dt)
     }
   }
   testBox.Center.z += XMVectorGetZ(movement) > 0 ? -maxOffset : maxOffset;
-  m_player->SetLocation(XMLoadFloat3(&testBox.Center));
+
+  XMVECTOR newLocation = XMLoadFloat3(&testBox.Center);
+
+  testBox = m_player->GetBoundingBox();
+  testBox.Center.y -= 0.01;
+  m_player->drop();
+  for (auto& block : m_world->GetBlocks())
+  {
+    if (testBox.Intersects(block->GetBoundingBox()))
+    {
+      m_player->setOnGround();
+      break;
+    }
+  }
+
+  if (!m_player->onGround())
+  {
+    m_player->addDroppingVelocity(dt);
+    XMVECTOR drop = { 0.0f, -m_player->getDroppingVelocity() * dt, 0.0f, 0.0f };
+    newLocation += drop;
+  }
+  m_player->SetLocation(newLocation);
 
   XMVECTOR rotation = GetPlayerRotation() * Player::ROTATION_SPEED * dt;
 
