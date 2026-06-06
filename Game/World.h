@@ -6,7 +6,7 @@
 #include "Blocks/Dirt.h"
 #include "Blocks/Stone.h"
 
-const int WORLD_SIZE = 16;
+const int WORLD_SIZE = 64;
 
 class World
 {

@@ -27,6 +27,8 @@ struct LightCBuf
 {
   XMFLOAT3 LightPos;
   float padding;
+  XMFLOAT3 targetColor;
+  float padding2;
 };
 
 class GraphicsEngine

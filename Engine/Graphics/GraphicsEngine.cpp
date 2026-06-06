@@ -104,6 +104,7 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   lcbbd.Usage = D3D11_USAGE_DEFAULT;
   lcbbd.ByteWidth = sizeof(LightCBuf);
   lcbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+  lcbbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
   lcbbd.CPUAccessFlags = 0;
   lcbbd.MiscFlags = 0;
 
@@ -177,6 +178,7 @@ void GraphicsEngine::RenderFrame(void)
 
   // LIGHT
   lightCBuffer.LightPos = { 50.0f, 80.0f, 50.0f };
+  lightCBuffer.targetColor = { 0.0f, 0.4f, 0.0f };
 
   m_deviceContext->UpdateSubresource(m_LightCBuffer.Get(), 0, NULL, &lightCBuffer, 0, 0);
 

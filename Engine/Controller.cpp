@@ -179,7 +179,7 @@ void Controller::MovePlayer(double dt)
   if (m_keyboard->JumpInQueue())
     m_player->jump();
 
-  if (m_player->getDroppingVelocity() > 0)
+  if (m_player->getDroppingVelocity() >= 0.0f)
   {
     testBox = m_player->GetBoundingBox();
     testBox.Center.y -= 0.01;

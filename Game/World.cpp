@@ -35,7 +35,7 @@ int World::CreateTerrain()
   {
     for (int z = -WORLD_SIZE / 2; z < WORLD_SIZE / 2; z++)
     {
-      XMVECTOR newCoords = { x, x > -2 ? 1 : 0, z, 0.0 };
+      XMVECTOR newCoords = { x, z > 0 ? (x+2*z)/2 / 7 % 2 : (x + z/5) / 2 / 7 % 2, z, 0.0 };
       auto block = std::make_shared<Dirt>(newCoords);
       m_blocks.push_back(block);
     }
