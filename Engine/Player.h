@@ -22,6 +22,7 @@ public:
   void setOnGround();
   void drop();
   void addDroppingVelocity(double dt);
+  void jump();
 
   bool onGround() const { return m_onGround; }
   float getDroppingVelocity() const { return m_droppingVelocity; };

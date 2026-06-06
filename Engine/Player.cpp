@@ -23,3 +23,9 @@ void Player::addDroppingVelocity(double dt)
 {
   m_droppingVelocity += DROP_ACCELERATION * dt;
 }
+
+void Player::jump()
+{
+  m_droppingVelocity = -JUMP_SPEED;
+  m_onGround = false;
+}

@@ -176,15 +176,21 @@ void Controller::MovePlayer(double dt)
 
   XMVECTOR newLocation = XMLoadFloat3(&testBox.Center);
 
-  testBox = m_player->GetBoundingBox();
-  testBox.Center.y -= 0.01;
-  m_player->drop();
-  for (auto& block : m_world->GetBlocks())
+  if (m_keyboard->JumpInQueue())
+    m_player->jump();
+
+  if (m_player->getDroppingVelocity() > 0)
   {
-    if (testBox.Intersects(block->GetBoundingBox()))
+    testBox = m_player->GetBoundingBox();
+    testBox.Center.y -= 0.01;
+    m_player->drop();
+    for (auto& block : m_world->GetBlocks())
     {
-      m_player->setOnGround();
-      break;
+      if (testBox.Intersects(block->GetBoundingBox()))
+      {
+        m_player->setOnGround();
+        break;
+      }
     }
   }
 
