@@ -142,7 +142,7 @@ void GraphicsEngine::RenderFrame(void)
   m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer.Get(), 0, NULL, &cbPerObj, 0, 0);
   m_deviceContext->VSSetConstantBuffers(0, 1, m_cbPerObjectBuffer.GetAddressOf());
 
-  lightCBuffer.LightPos = { 50.0f, 80.0f, 50.0f, 1.0f };
+  lightCBuffer.LightPos = { 500.0f, 800.0f, 500.0f, 1.0f };
   m_deviceContext->UpdateSubresource(m_LightCBuffer.Get(), 0, NULL, &lightCBuffer, 0, 0);
   m_deviceContext->PSSetConstantBuffers(0, 1, m_LightCBuffer.GetAddressOf());
 

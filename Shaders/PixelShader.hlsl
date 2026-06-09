@@ -15,7 +15,7 @@ float4 main(float4 worldPos : TEXCOORD0, float4 n : TEXCOORD1, float4 position :
   const float4 vToL = lightPos - worldPos;
   const float distToL = length(vToL);
   const float4 dirToL = vToL / distToL;
-  const float4 diffuse = diffuseColor * diffuseIntensity * col * dot(dirToL, n) * distToL/60.0f;
+  const float4 diffuse = diffuseColor * diffuseIntensity * col * dot(dirToL, n);
   
   return saturate(diffuse + ambient);
 
