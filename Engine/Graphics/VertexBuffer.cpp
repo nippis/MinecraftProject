@@ -21,14 +21,15 @@ Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer::GetBuffer()
 HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, DirectX::XMVECTOR blockCoord, DirectX::XMFLOAT4 color)
 {
   using namespace DirectX;
-  std::vector<DirectX::XMFLOAT3> normals =
+  std::vector<DirectX::XMFLOAT4> normals =
   {
-     { 0.0f,  0.0f, -1.0f },
-     { 1.0f,  0.0f,  0.0f },
-     { 0.0f,  1.0f,  0.0f },
-     {-1.0f,  0.0f,  0.0f },
-     { 0.0f, -1.0f,  0.0f },
-     { 0.0f,  0.0f,  1.0f }
+    { 0.0f,  0.0f,  1.0f, 1.0f }, // front  z+
+    { 1.0f,  0.0f,  0.0f, 1.0f }, // right  x+
+    { 0.0f,  1.0f,  0.0f, 1.0f }, // top    y+
+    {-1.0f,  0.0f,  0.0f, 1.0f }, // left   x-
+    { 0.0f, -1.0f,  0.0f, 1.0f }, // bottom y-
+    { 0.0f,  0.0f, -1.0f, 1.0f }  // back   z-
+
   };
 
   float x = XMVectorGetX(blockCoord);
@@ -37,14 +38,14 @@ HRESULT VertexBuffer::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> device, Di
 
   std::vector<VERTEX> vertices =
   {
-      {-0.5f + x, 0.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + x, 1.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + x, 1.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + x, 0.0f + y,  0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + x, 0.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      {-0.5f + x, 1.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + x, 1.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)},
-      { 0.5f + x, 0.0f + y, -0.5f + z, XMFLOAT3(0.0f, 0.0f, 0.0f)}
+      {XMFLOAT4(-0.5f + x, 0.0f + y,  0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color},
+      {XMFLOAT4(-0.5f + x, 1.0f + y,  0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color},
+      {XMFLOAT4( 0.5f + x, 1.0f + y,  0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color},
+      {XMFLOAT4( 0.5f + x, 0.0f + y,  0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color},
+      {XMFLOAT4(-0.5f + x, 0.0f + y, -0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color},
+      {XMFLOAT4(-0.5f + x, 1.0f + y, -0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color},
+      {XMFLOAT4( 0.5f + x, 1.0f + y, -0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color},
+      {XMFLOAT4( 0.5f + x, 0.0f + y, -0.5f + z, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), color}
   };
 
   std::vector<DWORD> indices = {

@@ -181,12 +181,13 @@ void Controller::MovePlayer(double dt)
 
   if (m_player->getDroppingVelocity() >= 0.0f)
   {
-    testBox = m_player->GetBoundingBox();
-    testBox.Center.y -= 0.01;
     m_player->drop();
     for (auto& block : m_world->GetBlocks())
     {
-      if (testBox.Intersects(block->GetBoundingBox()))
+      XMVECTOR blockL = block->GetLocation();
+      if (floorf(XMVectorGetX(blockL) == floorf(XMVectorGetX(newLocation))) &&
+          floorf(XMVectorGetZ(blockL) == floorf(XMVectorGetZ(newLocation))) &&
+          (-floorf(XMVectorGetY(blockL)) + (XMVectorGetY(newLocation) - 2.0f) < 0.01f))
       {
         m_player->setOnGround();
         break;

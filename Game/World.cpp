@@ -35,9 +35,10 @@ int World::CreateTerrain()
   {
     for (int z = -WORLD_SIZE / 2; z < WORLD_SIZE / 2; z++)
     {
-      XMVECTOR newCoords = { x, z > 0 ? (x+2*z)/2 / 7 % 2 : (x + z/5) / 2 / 7 % 2, z, 0.0 };
-      auto block = std::make_shared<Dirt>(newCoords);
-      m_blocks.push_back(block);
+      y = z > 0 ? (x + 2 * z) / 2 / 7 % 2 : (x + z / 5) / 2 / 7 % 2;
+      XMVECTOR newCoords = { x, y, z, 0.0 };
+      if (y >= 0) m_blocks.push_back(std::make_shared<Dirt>(newCoords));
+      else m_blocks.push_back(std::make_shared<Stone>(newCoords));
     }
   }
   return m_blocks.size();

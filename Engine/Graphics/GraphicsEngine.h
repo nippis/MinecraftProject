@@ -4,6 +4,7 @@
 #include <windowsx.h>
 #include <d3d11.h>
 #include <vector>
+#include <array>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <wrl.h>
@@ -21,14 +22,12 @@ struct cbPerObject
 {
   XMMATRIX  WVP;
   XMMATRIX World;
+  XMMATRIX NormalMatrix;
 };
 
 struct LightCBuf
 {
-  XMFLOAT3 LightPos;
-  float padding;
-  XMFLOAT3 targetColor;
-  float padding2;
+  XMFLOAT4 LightPos;
 };
 
 class GraphicsEngine

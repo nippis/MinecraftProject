@@ -1,25 +1,26 @@
 cbuffer cbPerObject
 {
   matrix WVP;
-  matrix model;
+  matrix World;
+  matrix NormalMatrix;
 };
-
-
 
 struct VOut
 {
-  float3 worldPos : POSITION;
-	float3 normal : NORMAL;
+  float4 worldPos : TEXCOORD0;
+  float4 normal : TEXCOORD1;
   float4 position : SV_POSITION;
+  float4 color : TEXCOORD2;
 };
 
-VOut main( float3 pos : POSITION, float3 n : NORMAL )
+VOut main( float4 pos : POSITION, float4 n : NORMAL, float4 col : COLOR )
 {
   VOut output;
 
-  output.worldPos = (float3) mul(float4(pos, 1.0f), model);
-  output.normal = mul(n, (float3x3) model);
-  output.position = mul(float4(pos, 1.0f), WVP);
+  output.worldPos = mul(pos, WVP);
+  output.normal = mul(n, NormalMatrix);
+  output.position = mul(pos, WVP);
+  output.color = col;
 
   return output;
 }

@@ -11,13 +11,8 @@
 GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr<World> world, std::shared_ptr<Player> player) :
   m_width(width), m_height(height), m_player(player), m_world(world)
 {
-
-  HRESULT hr;
-  //Describe our SwapChain Buffer
   DXGI_MODE_DESC bufferDesc;
-
   ZeroMemory(&bufferDesc, sizeof(DXGI_MODE_DESC));
-
   bufferDesc.Width = m_width;
   bufferDesc.Height = m_height;
   bufferDesc.RefreshRate.Numerator = 0;
@@ -26,10 +21,8 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
   bufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-  // Direct3D initialization
   DXGI_SWAP_CHAIN_DESC scd;
   ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
-
   scd.BufferDesc = bufferDesc;
   scd.SampleDesc.Count = 1;
   scd.SampleDesc.Quality = 0;
@@ -41,15 +34,11 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
 
   D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, NULL, NULL, NULL, D3D11_SDK_VERSION, &scd, &m_swapchain, &m_device, NULL, &m_deviceContext);
 
-  // Set the render target
   Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer;
   m_swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer);
-
   m_device->CreateRenderTargetView(pBackBuffer.Get(), NULL, &m_backbuffer);
 
-  //Describe our Depth/Stencil Buffer
   D3D11_TEXTURE2D_DESC depthStencilDesc;
-
   depthStencilDesc.Width = m_width;
   depthStencilDesc.Height = m_height;
   depthStencilDesc.MipLevels = 1;
@@ -62,11 +51,9 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   depthStencilDesc.CPUAccessFlags = 0;
   depthStencilDesc.MiscFlags = 0;
 
-  //Create the Depth/Stencil View
   m_device->CreateTexture2D(&depthStencilDesc, NULL, &m_depthStencilBuffer);
   m_device->CreateDepthStencilView(m_depthStencilBuffer.Get(), NULL, &m_depthStencilView);
 
-  //Set our Render Target
   m_deviceContext->OMSetRenderTargets(1, m_backbuffer.GetAddressOf(), m_depthStencilView.Get());
 
   D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
@@ -108,20 +95,15 @@ GraphicsEngine::GraphicsEngine(HWND hWnd, int width, int height, std::shared_ptr
   lcbbd.CPUAccessFlags = 0;
   lcbbd.MiscFlags = 0;
 
-  hr = m_device->CreateBuffer(&lcbbd, NULL, &m_LightCBuffer);
-
-  // Constant buffer to pixel shader
+  m_device->CreateBuffer(&lcbbd, NULL, &m_LightCBuffer);
 
   InitCamera();
   InitPipeline();
   InitGraphics();
-
-
 }
 
 void GraphicsEngine::InitCamera()
 {
-  // CAMERA STUFF ----------------
   D3D11_BUFFER_DESC cbbd;
   ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
 
@@ -132,78 +114,54 @@ void GraphicsEngine::InitCamera()
   cbbd.MiscFlags = 0;
 
   HRESULT hr = m_device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
-  if (FAILED(hr))
-  {
-    ErrorLogger::Log(hr, "Ei nyt toiminu tää kamerabufferin teko");
-  }
 
-  //Set the View matrix
   m_camPosition = m_camPositionOrig;
   m_camTarget = m_camTargetOrig;
   m_camUp = m_camUpOrig;
 
-  //Set the Projection matrix
   XMStoreFloat4x4(&m_camProjection, XMMatrixPerspectiveFovRH(0.4f * 3.14f, (float)m_width / m_height, 0.1f, 1000.0f));
-
-  // -------------------------
 }
 
 void GraphicsEngine::RenderFrame(void)
 {
   FLOAT rgba [4] = { 0.0f, 0.2f, 0.4f, 0.0f };
   m_deviceContext->ClearRenderTargetView(m_backbuffer.Get(), rgba);
-
-  //Refresh the Depth/Stencil view
   m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-  //Set the World/View/Projection matrix, then send it to constant buffer in effect file
   auto worldMatrix = XMMatrixIdentity();
 
-  // Calculate the camera rotation relative to player coordinates
   XMStoreFloat3(&m_camTarget, m_player->GetDirection());
   XMStoreFloat3(&m_camUp, m_player->GetUp());
-
-  
-  // Calculate player position
   XMStoreFloat3(&m_camPosition, m_player->GetLocation() + XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
   XMStoreFloat4x4(&m_camView, XMMatrixLookToRH(XMLoadFloat3(&m_camPosition), XMLoadFloat3(&m_camTarget), XMLoadFloat3(&m_camUp)));
   XMStoreFloat4x4(&m_WVP, worldMatrix * XMLoadFloat4x4(&m_camView) * XMLoadFloat4x4(&m_camProjection));
-  
   cbPerObj.WVP = XMMatrixTranspose(XMLoadFloat4x4(&m_WVP));
+
   cbPerObj.World = XMMatrixTranspose(worldMatrix);
-
+  cbPerObj.NormalMatrix = XMMatrixTranspose(XMMatrixInverse(nullptr, worldMatrix));
   m_deviceContext->UpdateSubresource(m_cbPerObjectBuffer.Get(), 0, NULL, &cbPerObj, 0, 0);
-
   m_deviceContext->VSSetConstantBuffers(0, 1, m_cbPerObjectBuffer.GetAddressOf());
 
-  // LIGHT
-  lightCBuffer.LightPos = { 50.0f, 80.0f, 50.0f };
-  lightCBuffer.targetColor = { 0.0f, 0.4f, 0.0f };
-
+  lightCBuffer.LightPos = { 50.0f, 80.0f, 50.0f, 1.0f };
   m_deviceContext->UpdateSubresource(m_LightCBuffer.Get(), 0, NULL, &lightCBuffer, 0, 0);
-
   m_deviceContext->PSSetConstantBuffers(0, 1, m_LightCBuffer.GetAddressOf());
-  // -------
 
   m_deviceContext->IASetInputLayout(m_VSinputLayout.Get());
   m_deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
   m_deviceContext->RSSetState(m_rasterizerState.Get());
   m_deviceContext->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
 
-  // set the shader objects
   m_deviceContext->VSSetShader(m_vertexShader.Get(), 0, 0);
   m_deviceContext->PSSetShader(m_pixelShader.Get(), 0, 0);
 
-  // select which vertex buffer to display
   UINT stride = sizeof(VERTEX);
   UINT offset = 0;
 
-  for (auto vertexBuffer : m_vertexBuffers)
+  for (auto& vertexBuffer : m_vertexBuffers)
   {
     m_deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetBuffer().GetAddressOf(), &stride, &offset);
     m_deviceContext->Draw(36, 0);
   }
-
 
   m_swapchain->Present(0, 0);
 }
@@ -213,13 +171,9 @@ void GraphicsEngine::UpdateVertexBuffer(int direction)
 
 }
 
-// -------------------------
-// this is the function that creates the shape to render
-// -------------------------
 void GraphicsEngine::InitGraphics()
 {
-
-  std::vector<DWORD> indices = {
+  constexpr std::array<DWORD, 36> indices = {
         0, 1, 2,
         0, 2, 3,
         3, 2, 6,
@@ -236,7 +190,6 @@ void GraphicsEngine::InitGraphics()
 
   D3D11_BUFFER_DESC indexBufferDesc;
   ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
-
   indexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
   indexBufferDesc.ByteWidth = sizeof(DWORD) * indices.size();
   indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -246,39 +199,27 @@ void GraphicsEngine::InitGraphics()
 
   iinitData.pSysMem = indices.data();
   m_device->CreateBuffer(&indexBufferDesc, &iinitData, &m_indexBuffer);
-
   m_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-  // TRIANGLE 1
   for (auto& block : m_world->GetBlocks())
-  {
     m_vertexBuffers.push_back(VertexBuffer(m_device, block->GetLocation(), block->GetColor()));
-  }
- 
 }
 
-
-// -----------------------
-// this function loads and prepares the shaders
-// -----------------------
 void GraphicsEngine::InitPipeline()
 {
-  // load and compile the two shaders
   ID3DBlob *VS, *PS;
   D3DCompileFromFile(L".\\Shaders\\VertexShader.hlsl", 0, 0, "main", "vs_4_0", 0, 0, &VS, 0);
   D3DCompileFromFile(L".\\Shaders\\PixelShader.hlsl", 0, 0, "main", "ps_4_0", 0, 0, &PS, 0);
 
-  // encapsulate both shaders into shader objects
   m_device->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, m_vertexShader.GetAddressOf());
   m_device->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, m_pixelShader.GetAddressOf());
 
-  // create the input layout object
   D3D11_INPUT_ELEMENT_DESC ied[] =
   {
-      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-      {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
   };
 
-  m_device->CreateInputLayout(ied, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &m_VSinputLayout);
-  m_device->CreateInputLayout(ied, 2, PS->GetBufferPointer(), PS->GetBufferSize(), &m_PSinputLayout);
+  m_device->CreateInputLayout(ied, 3, VS->GetBufferPointer(), VS->GetBufferSize(), &m_VSinputLayout);
 }
