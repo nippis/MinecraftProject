@@ -1,11 +1,13 @@
 #include <cmath>
 #include <vector>
 #include <ranges>
+#include <array>
 
 #include "World.h"
 #include "Blocks/Dirt.h"
 #include "Blocks/Stone.h"
 #include "Blocks/Trunk.h"
+#include "Blocks/Leaf.h"
 
 namespace NOISE
 {
@@ -81,8 +83,7 @@ std::vector<std::shared_ptr<Block>>& World::GetBlocks()
 
 std::shared_ptr<Block> World::GetBlock(int x, int y, int z) const
 {
-    uint32_t CR = 0;
-    XMVECTOR floatCoords = { static_cast<float>(x), static_cast<float>(y) ,static_cast<float>(z), 0.0 };
+  XMVECTOR floatCoords = { (float)(x), (float)(y) , (float)(z), 0.0 };
     for (auto& block : m_blocks)
     {
         if (XMVector3Equal(block->GetLocation(), floatCoords))
@@ -106,15 +107,20 @@ int World::CreateTerrain()
       float h = NOISE::TerrainNoise(static_cast<float>(x), static_cast<float>(z));
       y = (int)floorf(h * 20.0f);
       XMVECTOR newCoords = { x, y, z, 0.0 };
-      if (y >= 0) m_blocks.push_back(std::make_shared<Dirt>(newCoords));
+      if (y > -8) m_blocks.push_back(std::make_shared<Dirt>(newCoords));
       else m_blocks.push_back(std::make_shared<Stone>(newCoords));
     }
   }
-  CreateTree();
+
+  for (int x = -WORLD_SIZE / 2+10; x < WORLD_SIZE / 2 -10; x++)
+    for (int z = -WORLD_SIZE / 2+10; z < WORLD_SIZE / 2-10; z++)
+      if (!(x % 10) && !(z % 10))
+        CreateTree(floorf(NOISE::Random(x, z) * 5 + x), floorf(NOISE::Random(x, 4) * 4 + z));
+
   return m_blocks.size();
 }
 
-int World::GetGroundLevel(int x, int z)
+float World::GetGroundLevel(int x, int z)
 {
   float maxy = -1000.0f;
   for (auto& block : m_blocks | std::views::filter([&](auto block)
@@ -124,17 +130,37 @@ int World::GetGroundLevel(int x, int z)
     if (y > maxy)
       maxy = y;
   }
-  return (int)ceilf(maxy);
+  return ceilf(maxy);
 }
 
-void World::CreateTree()
+void World::CreateTree(float x, float z)
 {
-  int x = 10;
-  int z = 10;
-  int y = GetGroundLevel(x, z);
-  for (int i = 0; i < 5; i++)
+  constexpr float h = 8;
+  float y = GetGroundLevel(x, z);
+  for (int i = 0; i < h; i++)
   {
     XMVECTOR coords = { x, y + i, z, 0.0f };
     m_blocks.push_back(std::make_shared<Trunk>(coords));
   }
+
+  std::vector<XMFLOAT3> leaves =
+  {
+    {x+1, h+y-1, z+1},
+    {x+1, h+y-1, z-1},
+    {x-1, h+y-1, z+1},
+    {x-1, h+y-1, z-1},
+    {x+1, h+y-1, z  },
+    {x-1, h+y-1, z  },
+    {x  , h+y-1, z+1},
+    {x  , h+y-1, z-1}
+  };
+
+  for (float i = -3.0f; i <= 0; i++)
+  {
+    for (auto& leafCoord : leaves)
+    {
+      m_blocks.push_back(std::make_shared<Leaf>(XMLoadFloat3(&leafCoord)+XMVECTOR{0.0f, i, 0.0f}));
+    }
+  }
 }
+

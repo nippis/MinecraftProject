@@ -13,8 +13,8 @@
 #include "./Engine/Player.h"
 #include "Game/World.h"
 
-#define SCREEN_WIDTH 1000
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 960
 
 using namespace DirectX;
 

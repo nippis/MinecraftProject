@@ -21,9 +21,9 @@ public:
 private:
   int CreateTerrain();
 
-  int GetGroundLevel(int x, int z);
+  float GetGroundLevel(int x, int z);
 
-  void CreateTree();
+  void CreateTree(float x, float z);
 
   std::vector<std::shared_ptr<Block>> m_blocks;
 };

@@ -253,6 +253,7 @@
     <ClCompile Include="Engine\ErrorLogger.cpp" />
     <ClCompile Include="Engine\Graphics\GraphicsEngine.cpp" />
     <ClCompile Include="Engine\Keyboard.cpp" />
+    <ClCompile Include="Game\Blocks\Leaf.cpp" />
     <ClCompile Include="Game\Blocks\Trunk.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="Game\Blocks\Dirt.h" />
     <ClInclude Include="Engine\ErrorLogger.h" />
     <ClInclude Include="Engine\Graphics\GraphicsEngine.h" />
+    <ClInclude Include="Game\Blocks\Leaf.h" />
     <ClInclude Include="Game\Blocks\Stone.h" />
     <ClInclude Include="Engine\StringConverter.h" />
     <ClInclude Include="Engine\Graphics\VertexBuffer.h" />
