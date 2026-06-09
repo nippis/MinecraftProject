@@ -1,4 +1,7 @@
 #include "World.h"
+#include "Blocks/Dirt.h"
+#include "Blocks/Stone.h"
+#include "Blocks/Trunk.h"
 
 World::World()
 {
@@ -41,5 +44,30 @@ int World::CreateTerrain()
       else m_blocks.push_back(std::make_shared<Stone>(newCoords));
     }
   }
+  CreateTree();
   return m_blocks.size();
+}
+
+int World::GetGroundLevel(int x, int z)
+{
+  float maxy = -100.0f;
+  for (auto& block : m_blocks)
+  {
+    float y = XMVectorGetY(block->GetLocation());
+    if (y > maxy)
+      maxy = y;
+  }
+  return (int)ceilf(maxy);
+}
+
+void World::CreateTree()
+{
+  int x = 10;
+  int z = 10;
+  int y = GetGroundLevel(x, z);
+  for (int i = 0; i < 5; i++)
+  {
+    XMVECTOR coords = { x, y + i, z, 0.0f };
+    m_blocks.push_back(std::make_shared<Trunk>(coords));
+  }
 }

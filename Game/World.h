@@ -3,10 +3,9 @@
 #include <vector>
 #include <memory>
 
-#include "Blocks/Dirt.h"
-#include "Blocks/Stone.h"
-
 const int WORLD_SIZE = 64;
+
+class Block;
 
 class World
 {
@@ -21,6 +20,10 @@ public:
 
 private:
   int CreateTerrain();
+
+  int GetGroundLevel(int x, int z);
+
+  void CreateTree();
 
   std::vector<std::shared_ptr<Block>> m_blocks;
 };
